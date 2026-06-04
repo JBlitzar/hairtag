@@ -21,4 +21,4 @@ With regards to that, I also have the option of using the raw qfn chip or using 
 
 What I'm leaning towards now is esp32c3 qfn, off the shelf external antenna, AAA battery. It's not quite the professional form factor of the coin cell x nrf, but honestly it has some charm to it. qfn feels like just the right amount of challenge, and also I want pcba :wesh:
 
-![](https://cdn.hackclub.com/019e937b-fb3b-7f24-b3ac-de06d3c75fe5/hairtag_research.png)
+![](https://cdn.hackclub.com/019e937f-3b40-7028-8378-fe61f9628cc1/hairtag_research.png)
