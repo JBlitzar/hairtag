@@ -61,3 +61,7 @@ Here's what it looks like!
 And the placement: 
 
 ![](https://user-cdn.hackclub-assets.com/019e9591-67b1-7684-8ff5-a0f43c7e0a5e/Screenshot%202026-06-04%20at%207.16.20%E2%80%AFPM.png)
+
+
+I also researched firmware, I found this lovely implementation at https://github.com/timbeh/esp32c3-openhaystack/tree/main .
+Now, if it advertises for just 20ms and then deep sleeps for the rest of the ten seconds, that consumes $10\ \cdot\ \frac{\frac{20}{1000}}{10}+0.02\cdot\left(1-\frac{\frac{20}{1000}}{10}\right)$ = 0.03996 mA, so on a 220 mAh battery, that's 229 days of life!! This is pretty great, so we don't even need to worry about optimizing life. No nrf regrets.
