@@ -27,7 +27,7 @@ Alright, locking things in:
 
 - MCU: esp32c3 qfn: https://www.lcsc.com/product-detail/C2858491.html
 - Antenna: Molex 2450AT18A100E (datasheet: https://www.lcsc.com/datasheet/C89334.pdf)
-- Power: battery tbd (probably AAA), HT7533-1 (C14289)
+- Power: battery tbd (probably AAA)
 - Firmware: Openhaystack for esp32
 - Flashing: expose tx,rx,gnd,boot,en plus CP2102
 
