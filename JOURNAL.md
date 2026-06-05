@@ -36,9 +36,7 @@ Alright, locking things in:
 
 _Time Spent: 1.1h_
 
-Start time: 4:33 pm
-pause at 5:28
-resume at 5:43
+Start time: 4:33 pm, pause at 5:28, resume at 5:43
 
 Found a great datasheet on the esp32, https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32c3/esp-hardware-design-guidelines-en-master-esp32c3.pdf
 
