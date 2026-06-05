@@ -676,7 +676,7 @@
 	(footprint "lcsc:R0402"
 		(layer "F.Cu")
 		(uuid "2b02643b-137f-4895-8599-8d3ebf384727")
-		(at 55.5 58.93 90)
+		(at 55.5 58.83 90)
 		(property "Reference" "R1"
 			(at 0 -1 90)
 			(layer "F.SilkS")
@@ -1218,11 +1218,11 @@
 	(footprint "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical"
 		(layer "F.Cu")
 		(uuid "33f04312-437c-44df-ba11-0f7be680d842")
-		(at 51.8 61.75 90)
+		(at 50.96 61.6 90)
 		(descr "Through hole straight socket strip, 1x06, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x06 2.54mm single row")
 		(property "Reference" "J1"
-			(at 0 -2.77 90)
+			(at 0.5 -2.17 90)
 			(layer "F.SilkS")
 			(uuid "04932b51-a54e-4e48-a920-45b19318f90e")
 			(effects
@@ -1233,7 +1233,7 @@
 			)
 		)
 		(property "Value" "Flash"
-			(at 0 15.47 90)
+			(at 1 15.33 90)
 			(layer "F.Fab")
 			(uuid "22a7b15e-3659-4952-bd43-177ec61066a7")
 			(effects
@@ -4099,7 +4099,7 @@
 	(footprint "lcsc:C0402"
 		(layer "F.Cu")
 		(uuid "bb75c46f-b508-477a-bc1e-88c2065b1092")
-		(at 57.5 58.92 90)
+		(at 57.5 58.82 90)
 		(property "Reference" "C4"
 			(at 0 -4 90)
 			(layer "F.SilkS")
@@ -4397,7 +4397,7 @@
 		(property "Reference" "AE1"
 			(at 0 -4 0)
 			(layer "F.SilkS")
-			(uuid "dc0e3795-3344-4e51-9861-b6a3aae8612c")
+			(uuid "d60d1214-d3a5-4f35-9360-5acbda5bf490")
 			(effects
 				(font
 					(size 1 1)
@@ -4408,7 +4408,7 @@
 		(property "Value" "2450AT18A100E"
 			(at 0 4 0)
 			(layer "F.Fab")
-			(uuid "2572425d-b334-481e-9174-112dc7c8f46e")
+			(uuid "cc66df02-6c5f-48b2-a2ef-676096cb8da6")
 			(effects
 				(font
 					(size 1 1)
@@ -4420,7 +4420,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "9cd709a9-2845-4191-979c-56ff29d2ed93")
+			(uuid "aeef821f-c694-489d-a244-e9c92daca43f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4431,7 +4431,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "d7acf903-a1e1-470c-8790-597ef2ac87bd")
+			(uuid "55529cdd-703a-438e-8a8d-f2f6896bcf64")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5495,12 +5495,24 @@
 		(layer "F.SilkS")
 		(uuid "97d28f77-0059-48d7-8632-28b2a9165855")
 	)
-	(gr_rect
-		(start 48.25 47)
-		(end 66.25 63.5)
+	(gr_circle
+		(center 57.25 54.5)
+		(end 57.25 64.5)
 		(stroke
 			(width 0.05)
-			(type default)
+			(type solid)
+		)
+		(fill no)
+		(layer "B.SilkS")
+		(uuid "271f4cd4-90bd-4b2f-90a0-c3c1d297e220")
+	)
+	(gr_rect
+		(start 47.25 44.5)
+		(end 67.25 64.5)
+		(radius 5)
+		(stroke
+			(width 0.05)
+			(type solid)
 		)
 		(fill no)
 		(layer "Edge.Cuts")

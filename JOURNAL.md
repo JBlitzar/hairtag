@@ -34,7 +34,7 @@ Alright, locking things in:
 
 # 6/4/2026 4 PM - Schematic and Placement
 
-_Time Spent: 2.5h_
+_Time Spent: 2.8h_
 
 Found a great datasheet on the esp32, https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32c3/esp-hardware-design-guidelines-en-master-esp32c3.pdf
 
@@ -64,4 +64,8 @@ And the placement:
 
 
 I also researched firmware, I found this lovely implementation at https://github.com/timbeh/esp32c3-openhaystack/tree/main .
-Now, if it advertises for just 20ms and then deep sleeps for the rest of the ten seconds, that consumes $10\ \cdot\ \frac{\frac{20}{1000}}{10}+0.02\cdot\left(1-\frac{\frac{20}{1000}}{10}\right)$ = 0.03996 mA, so on a 220 mAh battery, that's 229 days of life!! This is pretty great, so we don't even need to worry about optimizing life. No nrf regrets.
+Now, if it advertises for just 20ms and then deep sleeps for the rest of the ten seconds, that consumes ![](https://latex.codecogs.com/png.image?\inline&space;\dpi{110}\bg{white}&space;10\&space;\cdot\&space;\frac{\frac{20}{1000}}{10}&plus;0.02\cdot\left(1-\frac{\frac{20}{1000}}{10}\right)) = 0.03996 mA, so on a 220 mAh battery, that's 229 days of life!! This is pretty great, so we don't even need to worry about optimizing life. No nrf regrets.
+
+So the coin cell is back on the table. So I just slightly redesigned the form factor. Honestly, this is pretty good to almost start routing.
+
+![](https://user-cdn.hackclub-assets.com/019e95a8-078e-7f63-85c8-3507200bc5b0/Screenshot%202026-06-04%20at%207.41.12%E2%80%AFPM.png)
