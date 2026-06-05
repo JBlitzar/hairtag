@@ -3461,12 +3461,6 @@
 		(uuid "08507d0a-24aa-4284-9003-4a67f85624a7")
 	)
 	(junction
-		(at 160.02 58.42)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "1ddca21a-753e-4b3e-b0ed-7300f3d6f3f0")
-	)
-	(junction
 		(at 102.87 72.39)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3479,16 +3473,10 @@
 		(uuid "30486018-7212-4953-b8c3-e169c8218c3a")
 	)
 	(junction
-		(at 157.48 107.95)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "578c1616-b562-42f2-94e9-971c192f0d86")
-	)
-	(junction
 		(at 83.82 72.39)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "6f6f8345-c9f8-401c-a8c6-a906921b9d43")
+		(uuid "31cba15c-ff4e-46a6-a4b5-9bdb94ec845e")
 	)
 	(junction
 		(at 73.66 72.39)
@@ -3503,10 +3491,10 @@
 		(uuid "7e9e3edf-cfdb-40e0-a567-88325ad35063")
 	)
 	(junction
-		(at 160.02 66.04)
+		(at 163.83 58.42)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "dc4d50d1-f970-4aae-a283-3abed99da098")
+		(uuid "d294277b-fa19-4c95-9f34-26ce028d90e2")
 	)
 	(junction
 		(at 85.09 95.25)
@@ -3566,16 +3554,6 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 107.95) (xy 167.64 107.95)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "03949b60-84f5-4956-97cb-202d5169d552")
-	)
-	(wire
-		(pts
 			(xy 140.97 69.85) (xy 140.97 72.39)
 		)
 		(stroke
@@ -3603,6 +3581,16 @@
 			(type default)
 		)
 		(uuid "2b13eb16-ce85-425b-af91-c9a3e7729564")
+	)
+	(wire
+		(pts
+			(xy 154.94 58.42) (xy 163.83 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2cefb34d-b12a-4db6-a53d-e7536c885903")
 	)
 	(wire
 		(pts
@@ -3776,6 +3764,16 @@
 	)
 	(wire
 		(pts
+			(xy 163.83 58.42) (xy 171.45 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9d89ab87-e701-48f7-a566-61adfaa791f5")
+	)
+	(wire
+		(pts
 			(xy 190.5 130.81) (xy 195.58 130.81)
 		)
 		(stroke
@@ -3806,27 +3804,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 66.04) (xy 160.02 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b66fb3c6-8af4-40e6-99a1-a0631f857db8")
-	)
-	(wire
-		(pts
-			(xy 160.02 58.42) (xy 171.45 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b8b2d87f-e21c-4b88-a2f3-8274c1b751d9")
-	)
-	(wire
-		(pts
-			(xy 147.32 107.95) (xy 157.48 107.95)
+			(xy 147.32 107.95) (xy 167.64 107.95)
 		)
 		(stroke
 			(width 0)
@@ -3923,16 +3901,6 @@
 			(type default)
 		)
 		(uuid "f01c6149-fbd2-4698-a6d1-bc25221cc3e4")
-	)
-	(wire
-		(pts
-			(xy 154.94 58.42) (xy 160.02 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f7539652-cf33-44e7-bc47-84a7c0401633")
 	)
 	(wire
 		(pts
@@ -4856,7 +4824,6 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "2f5c7832-0bf4-40aa-b21c-7c3bcf96b0d7")
 		(property "Reference" "C7"
 			(at 151.13 113.0299 90)
@@ -4870,7 +4837,7 @@
 			)
 		)
 		(property "Value" "0.1uF"
-			(at 151.13 114.2999 90)
+			(at 148.082 114.3 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -5147,120 +5114,6 @@
 			(project "hairtag"
 				(path "/aa294e8c-6ec0-4a40-9993-950bbf2ffeff"
 					(reference "L1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "lcsc:CL05A105KO5NNNC")
-		(at 157.48 111.76 270)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3a9d0132-4975-4981-acde-3db7df96e3ad")
-		(property "Reference" "C8"
-			(at 161.29 111.7599 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1uF"
-			(at 161.29 111.76 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "lcsc:C0402"
-			(at 149.86 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "https://lcsc.com/product-detail/Multilayer-Ceramic-Capacitors-MLCC-SMD-SMT_SAMSUNG_CL05A105KO5NNNC_1uF-105-10-16V_C29266.html"
-			(at 147.32 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "1uF (105) ±10% 16V"
-			(at 157.48 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Manufacturer" "SAMSUNG(三星)"
-			(at 144.78 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MPN" "CL05A105KO5NNNC"
-			(at 142.24 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC Part" "C29266"
-			(at 139.7 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "f043c066-0e2e-460f-b29d-8a7adfa1beed")
-		)
-		(pin "2"
-			(uuid "087639e1-da2d-4b96-b8e1-9a43b70827f2")
-		)
-		(instances
-			(project "hairtag"
-				(path "/aa294e8c-6ec0-4a40-9993-950bbf2ffeff"
-					(reference "C8")
 					(unit 1)
 				)
 			)
@@ -6086,7 +5939,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 160.02 66.04 0)
+		(at 163.83 66.04 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -6097,7 +5950,7 @@
 		(fields_autoplaced yes)
 		(uuid "5eacdac1-7328-425e-8249-f9c02621f0e5")
 		(property "Reference" "#PWR08"
-			(at 160.02 72.39 0)
+			(at 163.83 72.39 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6108,7 +5961,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 160.02 71.12 0)
+			(at 163.83 71.12 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6118,7 +5971,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 160.02 66.04 0)
+			(at 163.83 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6129,7 +5982,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 160.02 66.04 0)
+			(at 163.83 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6140,7 +5993,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 160.02 66.04 0)
+			(at 163.83 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6164,7 +6017,7 @@
 	)
 	(symbol
 		(lib_id "lcsc:CL05B103KB5NNNC")
-		(at 160.02 62.23 270)
+		(at 163.83 62.23 270)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -6175,7 +6028,7 @@
 		(fields_autoplaced yes)
 		(uuid "616f808c-5eb2-43a6-8c03-cdce177b6197")
 		(property "Reference" "C6"
-			(at 163.83 60.9599 90)
+			(at 167.64 60.9599 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6186,7 +6039,7 @@
 			)
 		)
 		(property "Value" "10nF"
-			(at 163.83 63.4999 90)
+			(at 167.64 63.4999 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6197,7 +6050,7 @@
 			)
 		)
 		(property "Footprint" "lcsc:C0402"
-			(at 152.4 62.23 0)
+			(at 156.21 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6208,7 +6061,7 @@
 			)
 		)
 		(property "Datasheet" "https://lcsc.com/product-detail/Multilayer-Ceramic-Capacitors-MLCC-SMD-SMT_SAMSUNG_CL05B103KB5NNNC_10nF-103-10-50V_C15195.html"
-			(at 149.86 62.23 0)
+			(at 153.67 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6219,7 +6072,7 @@
 			)
 		)
 		(property "Description" "10nF (103) ±10% 50V"
-			(at 160.02 62.23 0)
+			(at 163.83 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6230,7 +6083,7 @@
 			)
 		)
 		(property "Manufacturer" "SAMSUNG(三星)"
-			(at 147.32 62.23 0)
+			(at 151.13 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6241,7 +6094,7 @@
 			)
 		)
 		(property "MPN" "CL05B103KB5NNNC"
-			(at 144.78 62.23 0)
+			(at 148.59 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6252,7 +6105,7 @@
 			)
 		)
 		(property "LCSC Part" "C15195"
-			(at 142.24 62.23 0)
+			(at 146.05 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6908,7 +6761,6 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "b9328e4e-d53d-4614-9ecd-3786de30c98b")
 		(property "Reference" "#PWR09"
 			(at 171.45 72.39 0)
@@ -6922,7 +6774,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 171.45 71.12 0)
+			(at 169.672 66.294 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7248,7 +7100,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical"
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical"
 			(at 226.06 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -7659,86 +7511,8 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 157.48 115.57 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "f03e05f4-a489-447b-9742-4b57cb96ff3a")
-		(property "Reference" "#PWR011"
-			(at 157.48 121.92 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 157.48 120.65 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 157.48 115.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 157.48 115.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 157.48 115.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "50fc4644-8485-4917-9f2d-f139348083e5")
-		)
-		(instances
-			(project "hairtag"
-				(path "/aa294e8c-6ec0-4a40-9993-950bbf2ffeff"
-					(reference "#PWR011")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "lcsc:CL05A105KO5NNNC")
-		(at 83.82 76.2 270)
+		(at 83.82 76.2 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -7749,28 +7523,29 @@
 		(fields_autoplaced yes)
 		(uuid "f2c2cbf2-3283-49a0-95f7-7e8607993ee3")
 		(property "Reference" "C1"
-			(at 87.63 76.1999 90)
+			(at 87.63 74.9299 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
 		(property "Value" "1uF"
-			(at 87.63 76.2 0)
+			(at 87.63 77.4699 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify right)
 			)
 		)
 		(property "Footprint" "lcsc:C0402"
-			(at 76.2 76.2 0)
+			(at 91.44 76.2 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7781,7 +7556,7 @@
 			)
 		)
 		(property "Datasheet" "https://lcsc.com/product-detail/Multilayer-Ceramic-Capacitors-MLCC-SMD-SMT_SAMSUNG_CL05A105KO5NNNC_1uF-105-10-16V_C29266.html"
-			(at 73.66 76.2 0)
+			(at 93.98 76.2 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7803,7 +7578,7 @@
 			)
 		)
 		(property "Manufacturer" "SAMSUNG(三星)"
-			(at 71.12 76.2 0)
+			(at 96.52 76.2 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7814,7 +7589,7 @@
 			)
 		)
 		(property "MPN" "CL05A105KO5NNNC"
-			(at 68.58 76.2 0)
+			(at 99.06 76.2 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7825,7 +7600,7 @@
 			)
 		)
 		(property "LCSC Part" "C29266"
-			(at 66.04 76.2 0)
+			(at 101.6 76.2 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

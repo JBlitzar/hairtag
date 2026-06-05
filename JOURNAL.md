@@ -32,11 +32,9 @@ Alright, locking things in:
 - Flashing: expose tx,rx,gnd,boot,en plus CP2102
 
 
-# 6/4/2026 4 PM - Preliminary Schematic
+# 6/4/2026 4 PM - Schematic and Placement
 
-_Time Spent: 1.1h_
-
-Start time: 4:33 pm, pause at 5:28, resume at 5:43
+_Time Spent: 2.3h_
 
 Found a great datasheet on the esp32, https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32c3/esp-hardware-design-guidelines-en-master-esp32c3.pdf
 
@@ -58,3 +56,8 @@ crystal: C5444549 (specify 10pf) (datasheet: https://www.lcsc.com/datasheet/C544
 Here's what it looks like!
 
 ![](https://cdn.hackclub.com/019e9540-3ee7-7728-8a3e-3d3617548673/Screenshot%202026-06-04%20at%205.47.51%E2%80%AFPM.png)
+
+
+And the placement: 
+
+![](https://user-cdn.hackclub-assets.com/019e9591-67b1-7684-8ff5-a0f43c7e0a5e/Screenshot%202026-06-04%20at%207.16.20%E2%80%AFPM.png)
