@@ -72,3 +72,11 @@ So the coin cell is back on the table. So I just slightly redesigned the form fa
 
 Actually, update: I was able to fully fit the whole thing inside a 22mm circle.
 ![](https://user-cdn.hackclub-assets.com/019e95bc-a1b4-77b1-a1ce-e1591b51cd87/Screenshot%202026-06-04%20at%208.03.41%E2%80%AFPM.png)
+
+
+Things to consider with routing:
+ - Silly stuff with the impedance of the antenna (most annoying)
+  - Double check this with the datasheet.
+  - Also keep out zone
+ - Caps, antenna, crystal should all be via-free, the rest is fair game (signal, ground, power)
+  - What this likely means is that I should route these first.
