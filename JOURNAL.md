@@ -34,7 +34,7 @@ Alright, locking things in:
 
 # 6/4/2026 4 PM - Schematic and Placement
 
-_Time Spent: 2.3h_
+_Time Spent: 2.5h_
 
 Found a great datasheet on the esp32, https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32c3/esp-hardware-design-guidelines-en-master-esp32c3.pdf
 
