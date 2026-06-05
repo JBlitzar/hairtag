@@ -79,4 +79,32 @@ Things to consider with routing:
   - Double check this with the datasheet.
   - Also keep out zone
  - Caps, antenna, crystal should all be via-free, the rest is fair game (signal, ground, power)
-  - What this likely means is that I should route these first.
+  - What this likely means is that I should route these first. 
+
+
+
+# 6/4/2026 9 PM - First pass on routing
+
+_Time Spent: 0.5h_
+
+Reasonably fast routing thanks to my immaculate placement lol, just a bit of nudging around.
+
+DRC passes! Just had to connect all the gnd planes, no other issues
+
+Impedence calculators said that I would need a 3mm (!!) thick trace for my ble, but the pitch on the qfn package is literally 0.5mm. According to the internet, at my type of application, honestly, impedence matching is not allat. It'll be a negligible difference, I'm not trying to squeeze every last db out of this, it just needs to transmit to the nearest phone. So I guess I'll be getting 109Ω impedance instead of the reccommended 50Ω.
+
+"A safe rule of thumb in digital and low-frequency design is that if your trace or wire is less than 1/10 of the signal's wavelength, transmission line effects don't matter. Reflections won't have time to interfere with the original signal." My wire is 6mm and ble is 2.4ghz, so that's like 120mm. So I am fine.
+
+Picture: 
+
+![](https://user-cdn.hackclub-assets.com/019e9631-6ee3-7248-8c46-38ca647db80d/Screenshot%202026-06-04%20at%2010.11.15%E2%80%AFPM.png)
+
+TODOs eventually:
+ - add silkscreen art
+ - add the rest of the docs to make it shipped. This means:
+  - BOM fully figured out (this has items not in pcba like the batteries!)
+  - nice readme
+  - nice case
+  - et al.
+
+We'll see how pricing comes out.
