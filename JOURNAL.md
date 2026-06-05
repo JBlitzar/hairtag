@@ -34,7 +34,7 @@ Alright, locking things in:
 
 # 6/4/2026 4 PM - Schematic and Placement
 
-_Time Spent: 2.8h_
+_Time Spent: 3h_
 
 Found a great datasheet on the esp32, https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32c3/esp-hardware-design-guidelines-en-master-esp32c3.pdf
 
@@ -69,3 +69,6 @@ Now, if it advertises for just 20ms and then deep sleeps for the rest of the ten
 So the coin cell is back on the table. So I just slightly redesigned the form factor. Honestly, this is pretty good to almost start routing.
 
 ![](https://user-cdn.hackclub-assets.com/019e95a8-078e-7f63-85c8-3507200bc5b0/Screenshot%202026-06-04%20at%207.41.12%E2%80%AFPM.png)
+
+Actually, update: I was able to fully fit the whole thing inside a 22mm circle.
+![](https://user-cdn.hackclub-assets.com/019e95bc-a1b4-77b1-a1ce-e1591b51cd87/Screenshot%202026-06-04%20at%208.03.41%E2%80%AFPM.png)
