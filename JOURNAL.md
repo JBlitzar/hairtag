@@ -1,6 +1,6 @@
 # 6/4/2026 9 AM - Research and project idea
 
-_Time spent: 1h_
+_Time spent: 1.5h_
 
 Basically did some research and thinking about this project. I think it has the potential to be really cool. I sent my musings in slack to ask for feedback, but here's how it's feeling so far:
 
@@ -22,3 +22,41 @@ With regards to that, I also have the option of using the raw qfn chip or using 
 What I'm leaning towards now is esp32c3 qfn, off the shelf external antenna, AAA battery. It's not quite the professional form factor of the coin cell x nrf, but honestly it has some charm to it. qfn feels like just the right amount of challenge, and also I want pcba :wesh:
 
 ![](https://cdn.hackclub.com/019e937f-3b40-7028-8378-fe61f9628cc1/hairtag_research.png)
+
+Alright, locking things in:
+
+- MCU: esp32c3 qfn: https://www.lcsc.com/product-detail/C2858491.html
+- Antenna: Molex 2450AT18A100E (datasheet: https://www.lcsc.com/datasheet/C89334.pdf)
+- Power: battery tbd (probably AAA), HT7533-1 (C14289)
+- Firmware: Openhaystack for esp32
+- Flashing: expose tx,rx,gnd,boot,en plus CP2102
+
+
+# 6/4/2026 4 PM - Preliminary Schematic
+
+_Time Spent: 1.1h_
+
+Start time: 4:33 pm
+pause at 5:28
+resume at 5:43
+
+Found a great datasheet on the esp32, https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32c3/esp-hardware-design-guidelines-en-master-esp32c3.pdf
+
+Absolute gold mine; It has a reference design.
+
+Anyways, useful stuff for the future:
+
+1uf: C29266
+inductor: C76769 2nH
+100nf: C60474
+10uf: C315248
+10nf: C15195
+499Ω: C2960788
+crystal: C5444549 (specify 10pf) (datasheet: https://www.lcsc.com/datasheet/C5444549.pdf)
+15pf: C86285
+24Ω: C270625
+
+
+Here's what it looks like!
+
+![](https://cdn.hackclub.com/019e9540-3ee7-7728-8a3e-3d3617548673/Screenshot%202026-06-04%20at%205.47.51%E2%80%AFPM.png)
