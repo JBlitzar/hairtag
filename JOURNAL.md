@@ -144,9 +144,16 @@ Next up, I wrote the README. For next session, I'll want to make a nicer render 
 
 # 6/6/2026 8 AM - README, Flashing pinout
 
+_Time Spent: 1.5h_
+
+
 I was looking to bom optimize the flasher, but in the end, I need all the pins I'll use, because I need the RTS and DTR pins to autoboot. This is quite nice for qol. It'll be a sus bodge wire though.
 
 
 Made the wiring diagram, made the composite PCB + case CAD and exported it into `CAD/`.
 
 Next up, blender render!
+
+Anyways, check the images in `doc/`.
+
+![](CAD/render/br1.png)
