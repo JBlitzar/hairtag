@@ -1,5 +1,18 @@
 # hairtag
 
+## Note to the reviewers
+
+(I'll delete this section after review)
+
+- I marked this project as t2 because [souptik said it would be](https://hackclub.slack.com/archives/C0AQG3VPQDD/p1780630954076359?thread_ts=1780588338.083289&cid=C0AQG3VPQDD)
+- I've gone through all the requirements listed in the docs
+- If you're looking to check my schematic, `doc/esp_ref_schematic.png` has the reference from the datasheet that I used. 
+- See JOURNAL.md for notes on the various cost-benefit analyses I did. It explains some of the tradeoffs made (like the antenna trace width, etc)
+
+
+
+
+
 ![](https://cdn.hackclub.com/019e9e0e-b46d-7185-83e1-5ec8a4245a86/br1.png)
 
 
