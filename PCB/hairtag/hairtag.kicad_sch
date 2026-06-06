@@ -6476,7 +6476,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
+		(property "Footprint" "cr2032_holder:Untitled"
 			(at 271.78 104.14 0)
 			(hide yes)
 			(show_name no)

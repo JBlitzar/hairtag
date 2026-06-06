@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "cr2032_holder") (type "KiCad") (uri "${KIPRJMOD}/cr2032_holder.pretty") (options "") (descr ""))
+)

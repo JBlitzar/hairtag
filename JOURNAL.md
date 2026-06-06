@@ -111,7 +111,7 @@ We'll see how pricing comes out.
 
 # 6/5/2026 3 PM - Silkscreen, BOM, docs
 
-_Time Spent: 1h_
+_Time Spent: 2h_
 
 BOM optimization: swapped 4 extended LCSC parts for basic equivalents to cut PCBA costs.
 
@@ -123,3 +123,22 @@ https://basicp.art/ is such a gem of a resource
 - C86285 -> C1548
 
 I also fleshed out the sourcing for the rest of the parts. I could spend some more time looking at alternatives, but it's about as cheap as it's going to get. I have as many Basic parts as possible, I'll probably pay for battery holders out of pocket, and a cheaper CP2102 will save me only like $5.
+
+So while I was looking at my battery holders, I realized that I don't actually have to solder any bodge wires, and that there exists one with a very slick PCB integration. So I designed up a footprint and put it in. 
+
+![](https://cdn.shopify.com/s/files/1/0587/2130/4757/files/drawing_b2d5af8b-eeb3-4a0d-b3ed-65bfb7b8367f.jpg?v=1743664496)
+See, those pins can actually go into tht pads. These folks did it:
+
+![](https://www.pcboard.ca/image/catalog/products/battery_holder/cr2032-battery-box/cr2032-battery-box-dimensions.jpg)
+
+
+Alright, time to design a case.
+
+I think a simple press fit will do. This is a ~25.5mm diameter circle, which accounts for the weird overlapping footprints. It'll be a weird fit, but it'll look cool on the outside
+
+![](doc/case.png)
+
+
+Next up, README.
+
+https://forge.hackclub.com/docs/requirements/submitting
