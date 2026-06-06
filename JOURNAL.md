@@ -189,3 +189,8 @@ Findmy.py's auth works but you can't use it with macless haystack because you ca
 I also had silly cors issues, which I should have ditched earlier.
 
 Eventually gave up on the fancy frontend and just used biemster/FindMy directly. And it worked decently, still had to do the workaround for the 2fa codes like I described (sign in somewhere else, request a 2fa code, say can't access my device and need sms code, it intercepts that.)
+
+
+Here it is working!!!
+
+![](https://cdn.hackclub.com/019e9f05-991e-7acf-977e-aed40e2b4def/Screenshot%202026-06-06%20at%203.19.47%E2%80%AFPM.png)
