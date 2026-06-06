@@ -26,7 +26,7 @@ homemade airtag that's genuinely pretty good
 
 ## PCB
 
-![](doc/pcb.svg)
+<img src="doc/pcb.svg" width="100%">
 
 ## Other Images
 
