@@ -159,3 +159,24 @@ Next up, blender render!
 Anyways, check the images in `doc/`.
 
 ![](CAD/render/br1.png)
+
+# 6/6/2026 1 PM - Fought demons to get firmware working
+
+_Time Spent: 1.5h_
+
+> at least.
+
+
+Doing this on a plain esp devboard because ofc parts have not arrived yet, should be the same I just edited platformio.
+
+Basically it's everything in `firmware/`. Yeah, there were a lot of issues. I think I have tried five or six different openhaystack implementations, namely
+
+- https://github.com/seemoo-lab/openhaystack (bad because requires sketchy legacy apple mail plugin that no longer works)
+- https://github.com/timbeh/esp32c3-openhaystack (good, am using)
+- https://github.com/dchristl/macless-haystack (Spent a long time on this one, auth doesnt work for whatever reason, cors errors on frontend)
+- https://github.com/biemster/FindMy (Auth actually works, just a tui no frontend, tried using this auth with the macless frontend, didn't work)
+
+My stack right now is `esp32c3-openhaystack` firmware and a patched FindMy.py that doesn't throw errors lol.
+
+
+Anyways, I got real reports!! So ts actually works. I was so happy when I saw those jsons in stdout.
