@@ -26,8 +26,7 @@ fi
 uv run request_reports.py "$@"
 EXIT_CODE=$?
 
-if [ "$STARTED" = "1" ]; then
-    docker stop anisette >/dev/null
-fi
+docker stop anisette >/dev/null
+
 
 exit $EXIT_CODE
