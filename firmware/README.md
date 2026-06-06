@@ -18,11 +18,11 @@ For the sake of reproducibility, here's what to do:
 
 ## Prerequisites
 
-- macOS (you need Docker Desktop and the Apple auth flow is tested here)
+- macOS (special apple things)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) running
 - [uv](https://docs.astral.sh/uv/) package manager
 - An Apple ID with SMS 2FA enabled
-- The flashing setup as described in README.md
+- The flashing setup as described in [README.md](/README.md#wiring-diagram-for-flashing)
 
 ## Anisette server
 
@@ -104,6 +104,8 @@ missing: []
 ```
 
 The `goog` URL opens the location in Google Maps.
+
+a TODO for the future is to make this a nice TUI. 
 
 ### Options
 
