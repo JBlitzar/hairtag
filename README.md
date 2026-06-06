@@ -1,6 +1,6 @@
 # hairtag
 
-![](CAD/render/br1.png)
+![](https://cdn.hackclub.com/019e9e0e-b46d-7185-83e1-5ec8a4245a86/br1.png)
 
 
 
