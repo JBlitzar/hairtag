@@ -42,14 +42,14 @@ Absolute gold mine; It has a reference design.
 
 Anyways, useful stuff for the future:
 
-1uf: C29266
+1uf: C52923
 inductor: C76769 2nH
-100nf: C60474
-10uf: C315248
+100nf: C1525
+10uf: C15525
 10nf: C15195
 499Ω: C2960788
 crystal: C5444549 (specify 10pf) (datasheet: https://www.lcsc.com/datasheet/C5444549.pdf)
-15pf: C86285
+15pf: C1548
 24Ω: C270625
 
 
@@ -93,7 +93,7 @@ DRC passes! Just had to connect all the gnd planes, no other issues
 
 Impedence calculators said that I would need a 3mm (!!) thick trace for my ble, but the pitch on the qfn package is literally 0.5mm. According to the internet, at my type of application, honestly, impedence matching is not allat. It'll be a negligible difference, I'm not trying to squeeze every last db out of this, it just needs to transmit to the nearest phone. So I guess I'll be getting 109Ω impedance instead of the reccommended 50Ω.
 
-"A safe rule of thumb in digital and low-frequency design is that if your trace or wire is less than 1/10 of the signal's wavelength, transmission line effects don't matter. Reflections won't have time to interfere with the original signal." My wire is 6mm and ble is 2.4ghz, so that's like 120mm. So I am fine.
+Internet says: "A safe rule of thumb in digital and low-frequency design is that if your trace or wire is less than 1/10 of the signal's wavelength, transmission line effects don't matter. Reflections won't have time to interfere with the original signal." My wire is 6mm and ble is 2.4ghz, so that's like 120mm. So I am fine.
 
 Picture: 
 
@@ -108,3 +108,18 @@ TODOs eventually:
   - et al.
 
 We'll see how pricing comes out.
+
+# 6/5/2026 3 PM - Silkscreen, BOM, docs
+
+_Time Spent: 1h_
+
+BOM optimization: swapped 4 extended LCSC parts for basic equivalents to cut PCBA costs.
+
+https://basicp.art/ is such a gem of a resource
+
+- C29266 -> C52923
+- C60474 -> C1525
+- C315248 -> C15525
+- C86285 -> C1548
+
+I also fleshed out the sourcing for the rest of the parts. I could spend some more time looking at alternatives, but it's about as cheap as it's going to get. I have as many Basic parts as possible, I'll probably pay for battery holders out of pocket, and a cheaper CP2102 will save me only like $5.
