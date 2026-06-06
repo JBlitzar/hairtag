@@ -180,3 +180,12 @@ My stack right now is `esp32c3-openhaystack` firmware and a patched FindMy.py th
 
 
 Anyways, I got real reports!! So ts actually works. I was so happy when I saw those jsons in stdout.
+
+Let me expand on the journey a bit:
+I spent way too long on macless-haystack, but got stuck on 2fa codes. Even the fix from the pull request that was never merged (https://github.com/dchristl/macless-haystack/pull/226) didn't work. It claims to ask for them but the codes never come to your phone.
+
+Findmy.py's auth works but you can't use it with macless haystack because you can't reuse auths between anisette clients. 
+
+I also had silly cors issues, which I should have ditched earlier.
+
+Eventually gave up on the fancy frontend and just used biemster/FindMy directly. And it worked decently, still had to do the workaround for the 2fa codes like I described (sign in somewhere else, request a 2fa code, say can't access my device and need sms code, it intercepts that.)
