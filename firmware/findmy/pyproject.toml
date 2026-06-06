@@ -10,4 +10,5 @@ dependencies = [
     "pycryptodomex>=3.23.0",
     "requests>=2.34.2",
     "srp>=1.0.22",
+    "prettytable>=3.0.0",
 ]

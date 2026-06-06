@@ -14,6 +14,7 @@ import requests
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from prettytable import PrettyTable, TableStyle
 
 from pypush_gsa_icloud import generate_anisette_headers, icloud_login_mobileme
 
@@ -171,8 +172,27 @@ if __name__ == "__main__":
             ordered.append(tag)
     print(f"{len(ordered)} reports used.")
     ordered.sort(key=lambda item: item.get("timestamp"))
+
     for rep in ordered:
         print(rep)
+    if ordered:
+        tbl = PrettyTable()
+        tbl.set_style(TableStyle.SINGLE_BORDER)
+        tbl.field_names = ["Key", "Time", "Lat", "Lon", "Conf", "Map"]
+        tbl.align = "l"
+        tbl.max_width = 60
+        for rep in ordered:
+            tbl.add_row(
+                [
+                    rep["key"],
+                    rep["isodatetime"],
+                    f"{rep['lat']:.6f}",
+                    f"{rep['lon']:.6f}",
+                    rep["conf"],
+                    rep["goog"],
+                ]
+            )
+        print(tbl)
     print(f"found:   {list(found)}")
     print(f"missing: {[key for key in names.values() if key not in found]}")
     sq3.close()
