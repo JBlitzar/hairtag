@@ -139,4 +139,4 @@ Alright, time to design a case.
 I think a simple press fit will do. This is a ~25.5mm diameter circle, which accounts for the weird overlapping footprints. It'll be a weird fit, but it'll look cool on the outside
 
 ![](doc/case.png)
-Next up, I wrote the README. For next session, I'll want to make a nicer render in blender, clean up the traces until they're *perfect*, and make sure that I all the proper documentation sorted here.
+Next up, I wrote the README. For next session, I'll want to make a nicer render in blender, clean up the traces until they're *perfect*, and make sure that I all the proper documentation sorted here. (seems like I'll need a step file with my whole assembly)
