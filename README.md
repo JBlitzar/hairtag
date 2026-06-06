@@ -1,5 +1,8 @@
 # hairtag
 
+![](doc/kicad_render.png)
+
+
 homemade airtag that's genuinely pretty good
 
  - ESP32C3 chip, openhaystack firmware (more FOSS than Apple, no crazy custom die)
@@ -9,9 +12,20 @@ homemade airtag that's genuinely pretty good
  - Designed in California (just like apple lol)
 
 
-More stuff here later.
+ ## Why I made this project
+
+ I thought airtags were pretty cool. A while ago I was scrolling Github and I came across [openhaystack](https://github.com/seemoo-lab/openhaystack) (btw Seemoo lab has done all sorts of cool things that I've used before, shoutout to nexmon and opendrop). 
+
+ Anyways, I figured I could make my own. It's good experience, because you basically get all the components of a devboard, plus power budgeting, and interesting firmware. Plus, I already own 10000 devboards but I own zero airtags so this is a product that I'd actually use and want. 
 
 
+## Schematic
+
+![](doc/schematic.png)
+
+## PCB
+
+![](doc/pcb.png)
 
 ## Bom
 

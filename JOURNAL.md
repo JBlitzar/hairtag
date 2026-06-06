@@ -111,7 +111,7 @@ We'll see how pricing comes out.
 
 # 6/5/2026 3 PM - Silkscreen, BOM, docs
 
-_Time Spent: 2h_
+_Time Spent: 2.5h_
 
 BOM optimization: swapped 4 extended LCSC parts for basic equivalents to cut PCBA costs.
 
@@ -137,8 +137,8 @@ Alright, time to design a case.
 I think a simple press fit will do. This is a ~25.5mm diameter circle, which accounts for the weird overlapping footprints. It'll be a weird fit, but it'll look cool on the outside
 
 ![](doc/case.png)
-
-
 Next up, README.
+
+
 
 https://forge.hackclub.com/docs/requirements/submitting
