@@ -132,13 +132,11 @@ See, those pins can actually go into tht pads. These folks did it:
 ![](https://www.pcboard.ca/image/catalog/products/battery_holder/cr2032-battery-box/cr2032-battery-box-dimensions.jpg)
 
 
+![](doc/pcb.png)
+
 Alright, time to design a case.
 
 I think a simple press fit will do. This is a ~25.5mm diameter circle, which accounts for the weird overlapping footprints. It'll be a weird fit, but it'll look cool on the outside
 
 ![](doc/case.png)
-Next up, README.
-
-
-
-https://forge.hackclub.com/docs/requirements/submitting
+Next up, I wrote the README. For next session, I'll want to make a nicer render in blender, and make sure that I all the proper documentation sorted here.
