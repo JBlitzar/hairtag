@@ -37,7 +37,9 @@ homemade airtag that's genuinely pretty good
 ![](doc/wiring.png)
 
 
-## Other Images
+## Gallery
+
+https://github.com/user-attachments/assets/a9827342-8f9d-4dc0-8821-d6cf14613d8d
 
 ![](doc/kicad_render.png)
 
