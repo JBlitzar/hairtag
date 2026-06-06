@@ -133,7 +133,9 @@ You could make a burner apple id if you want I guess, it's kind of a pain though
 
 ## Licensing
 
-I stole both of these repositories, patched them so that they worked, and put them together.
+I did not write this myself. I copied these two repositories, patched them so that they worked, and put them together.
+
+Thank you, @biemster, @timbeh, and of course seemoo lab. 
 
 https://github.com/biemster/FindMy
 
