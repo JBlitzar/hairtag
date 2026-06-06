@@ -28,6 +28,9 @@ homemade airtag that's genuinely pretty good
 
 <img src="doc/pcb.svg" width="100%">
 
+![](doc/pcb_3d_top.png)
+
+
 ## Other Images
 
 ![](doc/kr_with_holder.png)

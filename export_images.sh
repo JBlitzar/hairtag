@@ -20,7 +20,7 @@ fi
 echo "Exporting PCB composite SVG..."
 "$KICAD_CLI" pcb export svg \
   --output "$OUT_DIR/pcb.svg" \
-  --layers "F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,Edge.Cuts,F.Fab,B.Fab" \
+  --layers "F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,Edge.Cuts" \
   --page-size-mode 2 \
   --fit-page-to-board \
   --exclude-drawing-sheet \
