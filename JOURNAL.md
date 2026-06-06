@@ -194,3 +194,7 @@ Eventually gave up on the fancy frontend and just used biemster/FindMy directly.
 Here it is working!!!
 
 ![](https://cdn.hackclub.com/019e9f05-991e-7acf-977e-aed40e2b4def/Screenshot%202026-06-06%20at%203.19.47%E2%80%AFPM.png)
+
+I made a collage when I was just starting out, so I'll make a collage here, as I'm about to submit.
+
+![](https://cdn.hackclub.com/019e9f27-8860-72e0-8753-6938b8a95d32/ship_banner.png)
