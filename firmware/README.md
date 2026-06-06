@@ -76,6 +76,10 @@ sqlite3 reports.db 'CREATE TABLE reports (id_short TEXT, timestamp INTEGER, date
 
 ## Authenticate with Apple
 
+Disclaimer: I'm not responsible if something happens to your apple account. Prefer an alt account.
+
+My personal advice is that it's probably fine though.
+
 ```bash
 cd findmy/
 uv run request_reports.py --regen
