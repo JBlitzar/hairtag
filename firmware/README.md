@@ -91,7 +91,7 @@ On success, the script saves `auth.json` in the `findmy/` directory. Subsequent 
 
 ```bash
 cd findmy/
-uv run request_reports.py
+./locate.sh
 ```
 
 Output looks like:
