@@ -186,8 +186,8 @@ if __name__ == "__main__":
                 [
                     rep["key"],
                     rep["isodatetime"],
-                    f"{rep['lat']:.6f}",
-                    f"{rep['lon']:.6f}",
+                    f"{rep['lat']}",
+                    f"{rep['lon']}",
                     rep["conf"],
                     rep["goog"],
                 ]

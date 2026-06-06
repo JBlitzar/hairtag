@@ -103,7 +103,8 @@ Output looks like:
 ```
 200: 8 reports received.
 8 reports used.
-{'lat': 37.7841, 'lon': -122.4194, 'conf': 1, 'status': 0, 'timestamp': 1749234567, 'isodatetime': '2026-06-06T14:42:47', 'key': 'XXXXX', 'goog': 'https://maps.google.com/maps?q=37.7841,-122.4460'}
+
+{'lat': 33.6104, 'lon': -153.3900, 'conf': 1, 'status': 0, 'timestamp': 1749234567, 'isodatetime': '2026-06-06T14:42:47', 'key': 'XXXXX', 'goog': 'https://maps.google.com/maps?q=33.6104,-153.3900'}
 found:   ['XXXXX']
 missing: []
 ```
