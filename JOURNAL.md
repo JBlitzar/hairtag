@@ -144,7 +144,9 @@ Next up, I wrote the README. For next session, I'll want to make a nicer render 
 
 # 6/6/2026 8 AM - README, Flashing pinout
 
-_Time Spent: 1.5h_
+_Time Spent: 2h_
+
+*not counting time spent waiting for blender renders to render*
 
 
 I was looking to bom optimize the flasher, but in the end, I need all the pins I'll use, because I need the RTS and DTR pins to autoboot. This is quite nice for qol. It'll be a sus bodge wire though.
