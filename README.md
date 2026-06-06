@@ -1,6 +1,8 @@
 # hairtag
 
-![](doc/kicad_render.png)
+![](CAD/render/br1.png)
+
+
 
 
 homemade airtag that's genuinely pretty good
@@ -30,10 +32,17 @@ homemade airtag that's genuinely pretty good
 
 ![](doc/pcb_3d_top.png)
 
+## Wiring diagram for flashing
+
+![](doc/wiring.png)
+
 
 ## Other Images
 
+![](doc/kicad_render.png)
+
 ![](doc/kr_with_holder.png)
+
 
 ## Bom
 

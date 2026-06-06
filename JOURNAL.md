@@ -140,3 +140,13 @@ I think a simple press fit will do. This is a ~25.5mm diameter circle, which acc
 
 ![](doc/case.png)
 Next up, I wrote the README. For next session, I'll want to make a nicer render in blender, clean up the traces until they're *perfect*, and make sure that I all the proper documentation sorted here. (seems like I'll need a step file with my whole assembly)
+
+
+# 6/6/2026 8 AM - README, Flashing pinout
+
+I was looking to bom optimize the flasher, but in the end, I need all the pins I'll use, because I need the RTS and DTR pins to autoboot. This is quite nice for qol. It'll be a sus bodge wire though.
+
+
+Made the wiring diagram, made the composite PCB + case CAD and exported it into `CAD/`.
+
+Next up, blender render!
