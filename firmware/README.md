@@ -2,8 +2,9 @@
 
 This directory contains everything needed to turn an ESP32-C3 into an Apple Find My tracker and query its location from your machine.
 
+Think of it this way: I basically got five half-broken implementations off of github, all at least two years old, tried things until it worked, and merged them together into one cursed readme here.
 
-This was one of the hardest installation processes I've ever done, probably superseded in difficulty only to that one time where I rooted a rabbit r1 without any x86 machines.
+This was one of the hardest installation processes I've ever documented (or done), probably superseded in difficulty only to that one arm64 rabbit r1 rooting project.
 
 This will likely only work on a mac, because apple is apple.
 

@@ -1,5 +1,6 @@
 # hairtag
 
+
 ## Note to the reviewers
 
 (I'll delete this section after review)
@@ -57,6 +58,8 @@ https://github.com/user-attachments/assets/a9827342-8f9d-4dc0-8821-d6cf14613d8d
 ![](doc/kicad_render.png)
 
 ![](doc/kr_with_holder.png)
+
+![](CAD/whole_assembly.png)
 
 
 ## Bom
