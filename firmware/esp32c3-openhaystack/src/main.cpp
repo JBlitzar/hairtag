@@ -41,9 +41,9 @@ int load_bytes_from_partition(uint8_t *dst, size_t size, int offset) {
         Serial.println("ERROR: Could not find key partition");
         return ESP_FAIL;
     }
-    Serial.printf("Found key partition: name=%s, address=0x%x, size=%d\n", 
+    Serial.printf("Found key partition: name=%s, address=0x%x, size=%d\n",
              keypart->label, keypart->address, keypart->size);
-    
+
     esp_err_t status = esp_partition_read(keypart, offset, dst, size);
     if (status != ESP_OK) {
         Serial.printf("ERROR: Could not read key from partition: %s\n", esp_err_to_name(status));
@@ -78,12 +78,12 @@ void set_payload_from_key(uint8_t *payload, uint8_t *public_key) {
         Serial.println("ERROR: Advertisement data buffer too small");
         return;
     }
-    
+
     /* copy last 22 bytes */
     memcpy(&payload[7], &public_key[6], 22);
     /* append two bits of public key */
     payload[29] = public_key[0] >> 6;
-    
+
     // Verify the payload length
     Serial.printf("Advertisement payload length: %d bytes\n", payload[0] + 1);
 }
@@ -94,16 +94,16 @@ bool set_random_address(uint8_t *address) {
         Serial.println("ERROR: Invalid address pointer");
         return false;
     }
-    
+
     // Create a NimBLEAddress from the byte array
     NimBLEAddress nimbleAddr(address, 1); // 1 = RANDOM address type
-    
+
     // Use the internal NimBLE API to set the address
     if (BLE_HS_ECONTROLLER == ble_hs_id_set_rnd(const_cast<uint8_t*>(nimbleAddr.getNative()))) {
         Serial.println("ERROR: Failed to set random address");
         return false;
     }
-    
+
     Serial.printf("Successfully set random address: %s\n", nimbleAddr.toString().c_str());
     return true;
 }
@@ -114,9 +114,9 @@ void setup() {
     while (!Serial) {
         delay(10);
     }
-    
+
     Serial.println("\n\nESP32C3 OpenHaystack starting...");
-    
+
     // Initialize NVS
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -130,7 +130,7 @@ void setup() {
     NimBLEDevice::init("ESP32C3");
     NimBLEDevice::setPower(ESP_PWR_LVL_P9);
     Serial.println("NimBLE initialized");
-    
+
     // This must be set to use a custom random address
     NimBLEDevice::setOwnAddrType(BLE_ADDR_RANDOM);
     Serial.println("BLE address type set to random");
@@ -166,16 +166,16 @@ void loop() {
     Serial.printf("Using key with start %02x %02x\n", public_key[0], public_key[1]);
     set_addr_from_key(rnd_addr, public_key);
     set_payload_from_key(adv_data, public_key);
-    
+
     // Set the custom random address for BLE
     if (!set_random_address(rnd_addr)) {
         Serial.println("ERROR: Failed to set custom random address");
         delay(1000);
         return;
     }
-    
+
     // Log the address we're using for debugging
-    Serial.printf("Using device address: %02x:%02x:%02x:%02x:%02x:%02x\n", 
+    Serial.printf("Using device address: %02x:%02x:%02x:%02x:%02x:%02x\n",
              rnd_addr[0], rnd_addr[1], rnd_addr[2], rnd_addr[3], rnd_addr[4], rnd_addr[5]);
 
     // Get advertising instance directly from NimBLEDevice
@@ -183,7 +183,7 @@ void loop() {
 
     // Create the advertisement data
     NimBLEAdvertisementData advData;
-    
+
     // Create manufacturer data
     std::string mfgData;
     mfgData.push_back(0x4c);  // Apple company ID (LSB)
@@ -191,15 +191,16 @@ void loop() {
     mfgData.push_back(0x12);  // Offline Finding type
     mfgData.push_back(0x19);  // Offline Finding length
     mfgData.push_back(0x00);  // State
-    
+
     // Add the public key
     for (int i = 6; i < 28; i++) {
         mfgData.push_back(public_key[i]);
     }
-    
-    // Add only the first two bits (remove the hint byte)
+
+    // patch: do not remove the hint byte
     mfgData.push_back(public_key[0] >> 6);
-    
+    mfgData.push_back(0x00);
+
     // Log the manufacturer data
     Serial.printf("Raw manufacturer data length: %d bytes\n", mfgData.length());
     Serial.print("Raw manufacturer data: ");
@@ -207,10 +208,10 @@ void loop() {
         Serial.printf("%02x ", (uint8_t)mfgData[i]);
     }
     Serial.println();
-    
+
     // Set the manufacturer data
     advData.setManufacturerData(mfgData);
-    
+
     // Log the complete advertisement data
     std::string advDataStr = advData.getPayload();
     Serial.printf("Complete advertisement data length: %d bytes\n", advDataStr.length());
@@ -220,7 +221,7 @@ void loop() {
         if (i > 0 && i % 16 == 0) Serial.println();  // New line every 16 bytes
     }
     Serial.println();
-    
+
     // Log the structure of the advertisement data
     Serial.println("Advertisement data structure:");
     size_t pos = 0;
@@ -235,20 +236,20 @@ void loop() {
         Serial.println();
         pos += length + 2;  // Move to next AD structure
     }
-    
+
     // Set the advertisement data
     pAdvertising->setAdvertisementData(advData);
-    
+
     // Configure advertisement parameters
     pAdvertising->setMinInterval(0x0800);  // 1.28s
     pAdvertising->setMaxInterval(0x0800);  // 1.28s
-    
+
     // Configure as non-connectable
     pAdvertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
-    
+
     // Enable scan response
     pAdvertising->setScanResponse(true);
-    
+
     // Start advertising
     Serial.printf("Sending beacon (with key index %d)\n", key_index);
     pAdvertising->start();
@@ -257,7 +258,7 @@ void loop() {
 
     Serial.println("Going to sleep");
     delay(10);
-    
+
     // Update key cycling
     if (cycle >= REUSE_CYCLES) {
         Serial.printf("Max cycles %d are reached. Changing key\n", cycle);
@@ -267,10 +268,10 @@ void loop() {
         Serial.printf("Current cycle is %d. Reusing key.\n", cycle);
         cycle++;
     }
-    
+
     // Use delay instead of sleep
     Serial.println("Waiting for next cycle...");
     delay(DELAY_IN_S * 1000);  // Convert seconds to milliseconds
-    
+
     Serial.println("Starting new cycle");
-} 
+}
