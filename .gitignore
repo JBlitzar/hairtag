@@ -33,3 +33,5 @@ fp-info-cache
 auth.json
 *.keys
 reports.db
+
+*.pyc

@@ -63,6 +63,11 @@ https://github.com/user-attachments/assets/a9827342-8f9d-4dc0-8821-d6cf14613d8d
 ![](CAD/whole_assembly.png)
 
 
+## Usage instructions
+
+See [`firmware/README.md`](firmware/README.md). It's quite involved.
+
+
 ## Bom
 
 |Item                     |Link                                                                     |Cost |Notes                                                                                                                       |Running Total|
