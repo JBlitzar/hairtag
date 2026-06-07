@@ -90,7 +90,7 @@ if __name__ == "__main__":
         # read key files generated with generate_keys.py
         with open(keyfile) as f:
             hashed_adv = priv = ""
-            name = os.path.basename(keyfile)[len(args.prefix) : -5]
+            name = os.path.basename(keyfile)[:-5]
             for line in f:
                 key = line.rstrip("\n").split(": ")
                 if key[0] == "Private key":
@@ -106,27 +106,35 @@ if __name__ == "__main__":
 
     unixEpoch = int(datetime.datetime.now().strftime("%s"))
     startdate = unixEpoch - (60 * 60 * args.hours)
-    data = {
-        "search": [
-            {
-                "startDate": startdate * 1000,
-                "endDate": unixEpoch * 1000,
-                "ids": list(names.keys()),
-            }
-        ]
-    }
 
-    r = requests.post(
-        "https://gateway.icloud.com/acsnservice/fetch",
-        auth=getAuth(
-            regenerate=args.regen,
-            second_factor="trusted_device" if args.trusteddevice else "sms",
-        ),
-        headers=generate_anisette_headers(),
-        json=data,
+    # Query each key separately to avoid Apple's result cap dropping some keys
+    auth_creds = getAuth(
+        regenerate=args.regen,
+        second_factor="trusted_device" if args.trusteddevice else "sms",
     )
-    res = json.loads(r.content.decode())["results"]
-    print(f"{r.status_code}: {len(res)} reports received.")
+    anisette_headers = generate_anisette_headers()
+
+    res = []
+    for hashed_adv, name in names.items():
+        data = {
+            "search": [
+                {
+                    "startDate": startdate * 1000,
+                    "endDate": unixEpoch * 1000,
+                    "ids": [hashed_adv],
+                }
+            ]
+        }
+        r = requests.post(
+            "https://gateway.icloud.com/acsnservice/fetch",
+            auth=auth_creds,
+            headers=anisette_headers,
+            json=data,
+        )
+        key_res = json.loads(r.content.decode())["results"]
+        res.extend(key_res)
+        print(f"  {name}: {r.status_code}, {len(key_res)} reports")
+    print(f"Total: {len(res)} reports received.")
 
     ordered = []
     found = set()
