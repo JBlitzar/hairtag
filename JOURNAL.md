@@ -177,6 +177,7 @@ Basically it's everything in `firmware/`. Yeah, there were a lot of issues. I th
 - https://github.com/biemster/FindMy (Auth actually works, just a tui no frontend, tried using this auth with the macless frontend, didn't work)
 
 My stack right now is `esp32c3-openhaystack` firmware (with the `fix-hint-byte` patch) and a patched FindMy.py that doesn't throw errors lol.
+  - Update: findmy.py also had some logic bugs that I also patched regarding querying multiple keys
 
 
 Anyways, I got real reports!! So ts actually works. I was so happy when I saw those jsons in stdout.
