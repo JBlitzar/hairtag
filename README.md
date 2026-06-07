@@ -24,9 +24,9 @@ homemade airtag that's genuinely pretty good
  - ESP32C3 chip, openhaystack firmware (more FOSS than Apple, no crazy custom die)
  - 22mm diameter board (smaller than Apple's 33, although technically the product is taller overall)
  - Probably costs less than Apple (legit like $2 per board after paying the $40 flat setup fees)
-  - (but if cost was really what you were hoping for, buy an aliexpress knockoff)
+    - (but if cost was really what you were hoping for, buy an aliexpress knockoff)
  - Comparable battery life to apple! (~229 days theoretically)
-  - Actually configurable depending on what temporal accuracy you need and which ma consumption figure you believe: https://www.desmos.com/calculator/mcncridlhq
+    - Actually configurable depending on what temporal accuracy you need and which ma consumption figure you believe: https://www.desmos.com/calculator/mcncridlhq
  - Designed in California (just like apple lol)
 
 
