@@ -1,3 +1,10 @@
+---
+title: "hairtag"
+author: "jblitzar"
+description: "homemade airtag that's genuinely pretty good"
+created_at: "2026-06-04"
+---
+
 # 6/4/2026 9 AM - Research and project idea
 
 _Time spent: 1.5h_
