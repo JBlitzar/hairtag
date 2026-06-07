@@ -1,5 +1,5 @@
 def main():
-    print("Hello from esp32c3-openhaystack!")
+    print("Hello from esp32-openhaystack!")
 
 
 if __name__ == "__main__":

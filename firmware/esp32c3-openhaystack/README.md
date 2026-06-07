@@ -1,9 +1,9 @@
-# ESP32C3 OpenHaystack
+# ESP32 OpenHaystack
 
 [![PlatformIO](https://img.shields.io/badge/platform-PlatformIO-orange.svg)](https://platformio.org)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-This project implements OpenHaystack firmware for ESP32C3 chips, allowing you to create Apple Find My network compatible accessory tags. The firmware is optimized for low power consumption and reliable operation.
+This project implements OpenHaystack firmware for ESP32 chips, allowing you to create Apple Find My network compatible accessory tags. The firmware is optimized for low power consumption and reliable operation.
 
 ## Table of Contents
 
@@ -24,7 +24,7 @@ This project implements OpenHaystack firmware for ESP32C3 chips, allowing you to
 
 ## Requirements
 
-### Compatible with ESP32-C3 based boards
+### Compatible with ESP32 based boards
 
 ### Software
 - [PlatformIO](https://platformio.org/install) (recommended) or Arduino IDE
@@ -36,8 +36,8 @@ This project implements OpenHaystack firmware for ESP32C3 chips, allowing you to
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/timbeh/esp32c3-openhaystack.git
-   cd esp32c3-openhaystack
+   git clone https://github.com/timbeh/esp32-openhaystack.git
+   cd esp32-openhaystack
    ```
 
 2. Install Python dependencies:
@@ -54,7 +54,7 @@ This project implements OpenHaystack firmware for ESP32C3 chips, allowing you to
 
 ### Building and Uploading
 
-1. Connect your ESP32C3 board to your computer
+1. Connect your ESP32 board to your computer
 2. Build and upload the firmware:
    ```bash
    pio run -t upload
@@ -71,12 +71,12 @@ This project implements OpenHaystack firmware for ESP32C3 chips, allowing you to
    - Copy the PREFIX_keyfile to the scripts/input folder
    - You can import the PREFIX_devices.json to the [OpenHaystack macOS App](https://github.com/seemoo-lab/openhaystack)
 
-3. Upload the keys to your ESP32C3:
+3. Upload the keys to your ESP32:
    ```bash
    python3 scripts/keywriter.py
    ```
    The script will:
-   - Auto-detect your ESP32C3 device
+   - Auto-detect your ESP32 device
    - Present a selection menu if multiple ports are found
 
    For manual port or keyfile specification:
@@ -98,11 +98,11 @@ This project implements OpenHaystack firmware for ESP32C3 chips, allowing you to
 2. **Device not visible in Find My**
    - Ensure correct public keys are uploaded
    - Verify keys are registered in the OpenHaystack or equivalent app
-   - Try the [`fix-hint-byte`](https://github.com/timbeh/esp32c3-openhaystack/tree/fix-hint-byte) branch which adds a missing hint byte (see below)
+   - Try the [`fix-hint-byte`](https://github.com/timbeh/esp32-openhaystack/tree/fix-hint-byte) branch which adds a missing hint byte (see below)
 
 ### Testing Branch: Hint Byte Fix
 
-There is a testing branch [`fix-hint-byte`](https://github.com/timbeh/esp32c3-openhaystack/tree/fix-hint-byte) that adds a missing hint byte to the advertisement data. The current main branch advertises 29 bytes, but some Find My collecting devices may expect 30 bytes per the official OpenHaystack format. This fix adds the hint byte (`0x00`) to match Apple's Find My network advertisement specification.
+There is a testing branch [`fix-hint-byte`](https://github.com/timbeh/esp32-openhaystack/tree/fix-hint-byte) that adds a missing hint byte to the advertisement data. The current main branch advertises 29 bytes, but some Find My collecting devices may expect 30 bytes per the official OpenHaystack format. This fix adds the hint byte (`0x00`) to match Apple's Find My network advertisement specification.
 
 If your beacon is not being detected by the Find My network, try the `fix-hint-byte` branch:
 
@@ -116,7 +116,7 @@ pio run -t upload
 ### Common Issues (continued)
 
 3. **Port not detected**
-   - Install correct USB drivers for your ESP32C3 board
+   - Install correct USB drivers for your ESP32 board
    - Check device manager for COM port assignment
 
 
@@ -125,7 +125,7 @@ pio run -t upload
 ### Architecture
 
 - Built on NimBLE for Bluetooth LE functionality
-- Uses ESP32C3's low-power capabilities
+- Uses ESP32's low-power capabilities
 - Stores keys in dedicated flash partition
 
 ### Power Management Settings

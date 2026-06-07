@@ -19,7 +19,7 @@ def list_available_ports():
 def select_port(ports):
     """Let the user select a port from a list"""
     if not ports:
-        print("No serial ports found. Please connect your ESP32C3 device.")
+        print("No serial ports found. Please connect your ESP32 device.")
         sys.exit(1)
 
     if len(ports) == 1:
@@ -78,11 +78,11 @@ def find_keyfile(input_dir):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Write keys to ESP32C3 key partition")
+    parser = argparse.ArgumentParser(description="Write keys to ESP32 key partition")
     parser.add_argument(
         "--port",
         "-p",
-        help="Serial port of ESP32C3 (if not provided, will auto-detect)",
+        help="Serial port of ESP32 (if not provided, will auto-detect)",
     )
     return parser.parse_args()
 
