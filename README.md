@@ -5,6 +5,9 @@
 
 (I'll delete this section after review)
 
+- Re the last rejection: 
+  - Soo I accidentally gitignored the csv files, which are of course needed for production. I now have them though. 
+  - So, I have fixed the issues identified with my last rejection. [Link](https://hackclub.slack.com/archives/C0AV7EAB9K7/p1780841482349199?thread_ts=1780807281.975289&cid=C0AV7EAB9K7)
 - I marked this project as t2 because [souptik said it would be](https://hackclub.slack.com/archives/C0AQG3VPQDD/p1780630954076359?thread_ts=1780588338.083289&cid=C0AQG3VPQDD)
 - I've gone through all the requirements listed in the docs
 - If you're looking to check my schematic, `doc/esp_ref_schematic.png` has the reference from the datasheet that I used. 
