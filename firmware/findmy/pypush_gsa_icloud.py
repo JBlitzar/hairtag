@@ -1,3 +1,5 @@
+# Copied and modified from https://github.com/biemster/FindMy
+
 import base64
 import hashlib
 import hmac

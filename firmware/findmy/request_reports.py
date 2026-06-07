@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+#
+# Copied and modified from https://github.com/biemster/FindMy
+
 import argparse
 import base64
 import codecs
@@ -87,7 +90,6 @@ if __name__ == "__main__":
     for keyfile in glob.glob(
         os.path.dirname(os.path.realpath(__file__)) + "/" + args.prefix + "*.keys"
     ):
-        # read key files generated with generate_keys.py
         with open(keyfile) as f:
             hashed_adv = priv = ""
             name = os.path.basename(keyfile)[:-5]
@@ -107,7 +109,6 @@ if __name__ == "__main__":
     unixEpoch = int(datetime.datetime.now().strftime("%s"))
     startdate = unixEpoch - (60 * 60 * args.hours)
 
-    # Query each key separately to avoid Apple's result cap dropping some keys
     auth_creds = getAuth(
         regenerate=args.regen,
         second_factor="trusted_device" if args.trusteddevice else "sms",
@@ -148,7 +149,7 @@ if __name__ == "__main__":
         timestamp = int.from_bytes(data[0:4], "big") + 978307200
         # Patched: Apple no longer returns datePublished in all responses
         sq3.execute(
-            f"INSERT OR REPLACE INTO reports VALUES ('{names[report['id']]}', {timestamp}, {report.get('datePublished', 0)}, '{report['payload']}', '{report['id']}', {report['statusCode']})"
+            f"INSERT OR IGNORE INTO reports VALUES ('{names[report['id']]}', {timestamp}, {report.get('datePublished', 0)}, '{report['payload']}', '{report['id']}', {report['statusCode']})"
         )
         if timestamp >= startdate:
             eph_key = ec.EllipticCurvePublicKey.from_encoded_point(
@@ -161,10 +162,10 @@ if __name__ == "__main__":
             decryption_key = symmetric_key[:16]
             iv = symmetric_key[16:]
             enc_data = data[62:72]
-            tag = data[72:]
+            auth_tag = data[72:]
 
             decrypted = decrypt(
-                enc_data, algorithms.AES(decryption_key), modes.GCM(iv, tag)
+                enc_data, algorithms.AES(decryption_key), modes.GCM(iv, auth_tag)
             )
             tag = decode_tag(decrypted)
             tag["timestamp"] = timestamp
@@ -178,7 +179,55 @@ if __name__ == "__main__":
             )
             found.add(tag["key"])
             ordered.append(tag)
-    print(f"{len(ordered)} reports used.")
+
+    for hashed_adv, name in names.items():
+        sq3.execute(
+            f"SELECT timestamp, payload, id FROM reports WHERE id_short = '{name}' AND timestamp >= {startdate}"
+        )
+        db_reports = sq3.fetchall()
+        for row in db_reports:
+            timestamp, payload_b64, report_id = row
+
+            if any(
+                r.get("timestamp") == timestamp and r.get("key") == name
+                for r in ordered
+            ):
+                continue
+
+            priv = int.from_bytes(base64.b64decode(privkeys[report_id]), "big")
+            data = base64.b64decode(payload_b64)
+            if len(data) > 88:
+                data = data[:4] + data[5:]
+
+            eph_key = ec.EllipticCurvePublicKey.from_encoded_point(
+                ec.SECP224R1(), data[5:62]
+            )
+            shared_key = ec.derive_private_key(
+                priv, ec.SECP224R1(), default_backend()
+            ).exchange(ec.ECDH(), eph_key)
+            symmetric_key = sha256(shared_key + b"\x00\x00\x00\x01" + data[5:62])
+            decryption_key = symmetric_key[:16]
+            iv = symmetric_key[16:]
+            enc_data = data[62:72]
+            auth_tag = data[72:]
+
+            decrypted = decrypt(
+                enc_data, algorithms.AES(decryption_key), modes.GCM(iv, auth_tag)
+            )
+            tag = decode_tag(decrypted)
+            tag["timestamp"] = timestamp
+            tag["isodatetime"] = datetime.datetime.fromtimestamp(timestamp).isoformat()
+            tag["key"] = name
+            tag["goog"] = (
+                "https://maps.google.com/maps?q="
+                + str(tag["lat"])
+                + ","
+                + str(tag["lon"])
+            )
+            found.add(tag["key"])
+            ordered.append(tag)
+
+    print(f"{len(ordered)} total reports (from Apple + database).")
     ordered.sort(key=lambda item: item.get("timestamp"))
 
     for rep in ordered:
