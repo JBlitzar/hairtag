@@ -173,6 +173,8 @@ _Time Spent: 1.5h_
 
 > at least.
 
+**Hackatime project name**: `hairtag`, same as the repo
+
 
 Doing this on a plain esp devboard because ofc parts have not arrived yet, should be the same I just edited platformio.
 
