@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>HairTag Map</title>
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+        />
+
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                font-family: "Geist Mono", monospace;
+                display: flex;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            #sidebar {
+                width: 240px;
+                min-width: 240px;
+                background: #efefef;
+                color: #111;
+                display: flex;
+                flex-direction: column;
+                padding: 16px;
+                gap: 12px;
+                overflow-y: auto;
+            }
+            #sidebar h1 {
+                font-size: 16px;
+                font-weight: 600;
+                color: #111;
+            }
+
+            #controls {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            #controls label {
+                font-size: 12px;
+                color: #111;
+            }
+            #controls select,
+            #controls button {
+                width: 100%;
+                padding: 7px 10px;
+                border-radius: 6px;
+                border: none;
+                font-size: 13px;
+                cursor: pointer;
+            }
+            #controls select {
+                background: #efefef;
+                color: #111;
+            }
+            #controls button {
+                background: #efefef;
+                color: #111;
+                outline: 1px solid #000;
+            }
+            #controls button:hover {
+                background: #d0cfcf;
+            }
+
+            #tag-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            #tag-list h2 {
+                font-size: 13px;
+                color: #aaa;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .tag-card {
+                font-family: "Geist Mono", monospace;
+                background: #efefef;
+                border-radius: 8px;
+                padding: 10px 12px;
+                outline: 1px solid #000;
+                border-left: 4px solid var(--tag-color, #888);
+            }
+            .tag-card .tag-name {
+                font-size: 13px;
+                font-weight: 600;
+            }
+            .tag-card .tag-last-seen {
+                font-size: 11px;
+                color: #aaa;
+                margin-top: 3px;
+            }
+            .tag-card .tag-count {
+                font-size: 11px;
+                color: #888;
+            }
+
+            #map {
+                flex: 1;
+            }
+
+            #status-bar {
+                position: absolute;
+                bottom: 10px;
+                left: 260px;
+                background: rgba(0, 0, 0, 0.65);
+                color: #fff;
+                padding: 4px 10px;
+                border-radius: 12px;
+                font-size: 12px;
+                pointer-events: none;
+                z-index: 1000;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="sidebar">
+            <h1>hairtag</h1>
+
+            <div id="controls">
+                <label for="range-select">Time range</label>
+                <select id="range-select">
+                    <option value="1">Last 1 hour</option>
+                    <option value="6">Last 6 hours</option>
+                    <option value="24">Last 24 hours</option>
+                    <option value="48" selected>Last 48 hours</option>
+                    <option value="168">Last 7 days</option>
+                </select>
+                <button id="fit-btn">Fit to reports</button>
+                <button id="refresh-btn">Refresh</button>
+            </div>
+
+            <div id="tag-list">
+                <h2>Tags</h2>
+                <div id="tag-cards"></div>
+            </div>
+        </div>
+
+        <div id="map"></div>
+        <div id="status-bar">Loading…</div>
+
+        <script>
+            const COLORS = [
+                "#e74c3c",
+                "#3498db",
+                "#2ecc71",
+                "#f39c12",
+                "#9b59b6",
+                "#1abc9c",
+                "#e67e22",
+                "#34495e",
+            ];
+            const tagColor = {};
+            let colorIdx = 0;
+
+            const map = L.map("map").setView([20, 0], 2);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution:
+                    '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                maxZoom: 19,
+            }).addTo(map);
+
+            const layers = {}; // tagName → { line, markers: [] }
+            const allBounds = [];
+
+            function getColor(tag) {
+                if (!tagColor[tag]) {
+                    tagColor[tag] = COLORS[colorIdx++ % COLORS.length];
+                }
+                return tagColor[tag];
+            }
+
+            function timeAgo(ts) {
+                const diff = Math.floor(Date.now() / 1000) - ts;
+                if (diff < 60) return `${diff}s ago`;
+                if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+                if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+                return `${Math.floor(diff / 86400)}d ago`;
+            }
+
+            function clearLayers() {
+                Object.values(layers).forEach((l) => {
+                    l.line.remove();
+                    l.markers.forEach((m) => m.remove());
+                });
+                Object.keys(layers).forEach((k) => delete layers[k]);
+                allBounds.length = 0;
+            }
+
+            async function loadReports() {
+                const hours = document.getElementById("range-select").value;
+                document.getElementById("status-bar").textContent = "Loading…";
+
+                const resp = await fetch(`/api/reports?hours=${hours}`);
+                const reports = await resp.json();
+
+                clearLayers();
+                document.getElementById("tag-cards").innerHTML = "";
+
+                if (!reports.length) {
+                    document.getElementById("status-bar").textContent =
+                        "No reports in range.";
+                    return;
+                }
+
+                // Group by tag
+                const byTag = {};
+                reports.forEach((r) => {
+                    (byTag[r.key] = byTag[r.key] || []).push(r);
+                });
+
+                Object.entries(byTag).forEach(([tag, pts]) => {
+                    const color = getColor(tag);
+                    const latlngs = pts.map((p) => [p.lat, p.lon]);
+
+                    const line = L.polyline(latlngs, {
+                        color,
+                        weight: 2,
+                        opacity: 0.6,
+                    }).addTo(map);
+                    const markers = pts.map((p, i) => {
+                        const isLast = i === pts.length - 1;
+                        const marker = L.circleMarker([p.lat, p.lon], {
+                            radius: isLast ? 9 : 5,
+                            color,
+                            fillColor: isLast ? color : "#fff",
+                            fillOpacity: isLast ? 1 : 0.7,
+                            weight: 2,
+                        }).addTo(map);
+                        marker.bindPopup(
+                            `<b>${p.key}</b><br>${p.isodatetime}<br>` +
+                                `${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}<br>` +
+                                `Confidence: ${p.conf}`,
+                        );
+                        return marker;
+                    });
+
+                    layers[tag] = { line, markers };
+                    latlngs.forEach((ll) => allBounds.push(ll));
+
+                    // Sidebar card
+                    const last = pts[pts.length - 1];
+                    const card = document.createElement("div");
+                    card.className = "tag-card";
+                    card.style.setProperty("--tag-color", color);
+                    card.innerHTML = `
+      <div class="tag-name">${tag}</div>
+      <div class="tag-last-seen">Last seen ${timeAgo(last.timestamp)}</div>
+      <div class="tag-count">${pts.length} report${pts.length !== 1 ? "s" : ""}</div>
+    `;
+                    card.addEventListener("click", () => {
+                        map.fitBounds(line.getBounds().pad(0.2));
+                        markers[markers.length - 1].openPopup();
+                    });
+                    document.getElementById("tag-cards").appendChild(card);
+                });
+
+                document.getElementById("status-bar").textContent =
+                    `${reports.length} reports · ${Object.keys(byTag).length} tag(s)`;
+            }
+
+            function fitAll() {
+                if (allBounds.length)
+                    map.fitBounds(L.latLngBounds(allBounds).pad(0.1));
+            }
+
+            document
+                .getElementById("range-select")
+                .addEventListener("change", loadReports);
+            document
+                .getElementById("refresh-btn")
+                .addEventListener("click", loadReports);
+            document
+                .getElementById("fit-btn")
+                .addEventListener("click", fitAll);
+
+            loadReports().then(fitAll);
+        </script>
+    </body>
+</html>
