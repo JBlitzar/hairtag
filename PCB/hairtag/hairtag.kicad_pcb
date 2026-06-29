@@ -2453,7 +2453,7 @@
 				(pins "1" "2" "3" "4" "5" "6")
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_bom dnp)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
 			(start 1.33 -1.33)
@@ -7540,7 +7540,7 @@
 				(pins "1" "2")
 			)
 		)
-		(attr smd)
+		(attr smd exclude_from_bom dnp)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_rect
 			(start -3.85 14.3)

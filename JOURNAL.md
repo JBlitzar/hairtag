@@ -218,3 +218,39 @@ I mean, what it says. I added a yellow LED to gpio10 for debugging when firmware
 ![](https://cdn.hackclub.com/019f1116-6494-7cd6-9bbd-17739f78fc7e/Screenshot%202026-06-28%20at%206.53.25%E2%80%AFPM.png)
 
 For tomorrow, I'll re-check the flashing pins, re-check that I don't need a special transistor network, and then order the boards! And then work on the fpga flasher, which will be fun I guess.
+
+# 6/29/2026 7 AM - Final Tweaks and Ordering the Boards
+
+_Time Spent: 1.5h_
+
+Soo I figured I would sleep on ordering until the next day, and it was a good idea. Turns out I was missing a bunch of strapping pins etc that needed to be pulled one way or another.
+
+Just the reference schematic doesn't tell the whole story. I found the schematic checklist though.
+
+https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32c3/schematic-checklist.html#strapping-pins
+
+It also umm turns out that the part labelled "R1" in the reference schematic is actually an INDUCTOR, not a resistor. So I had to change that 😭.
+
+So I...
+ - added a 10k pull-up to gpio8 and gpio2
+ - added a 1uf cap on vdd_spi to gnd
+ - added a 100uf bulk cap on vcc to mitigate brownouts on ble spikes
+  - This was a pain to place and route, the only jlc basic part package is 1206, which is a lot of real estate on the 22mm circular board! I ended up getting a really interesting placement. 90 degrees didn't work but 85 degrees did, so I went with that ☠️
+ - added ground stitching vias around the antenna keepout
+ - added routing and a connector for the USB flashing pins as a backup? TBD if that's easier or harder than my current method, but its nice to have options and escape routes. 
+ - Made VCC lines thicker (0.5mm)
+ - cleaned up traces and silkscreens overall. No DRC errors. I do have a few tilted components now, but I was able to use the back for some routing.
+
+ Here's what it looks like now overall I guess
+
+ ![](https://cdn.hackclub.com/019f14fb-69f5-76b4-872f-140a86866d28/Screenshot%202026-06-29%20at%201.04.03%E2%80%AFPM.png)
+
+
+I then went on to ordering. Had to edit some stuff in the BOM for it to work (some parts were out of stock), and two components were rotated incorrectly, but otherwise it was good. See PCB/hairtag/production_real/ .
+
+![](https://cdn.hackclub.com/019f154e-5a0d-77a8-8a6f-864dc318c094/Screenshot%202026-06-29%20at%201.29.42%E2%80%AFPM.png)
+
+
+And the JLC image:
+
+![](https://cdn.hackclub.com/019f154f-39b1-7edf-9503-f5f8aef19f78/7fd2913d27b74e38866ca95e2a2d3bc5_T.png)
