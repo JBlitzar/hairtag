@@ -70,7 +70,12 @@
         }
       },
       "diff_pair_dimensions": [],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "starved_thermal|56100000|65650000|2749f49f-c055-4e0f-8f98-ac3ba2db5ad3|5f7aca50-9a1b-404c-8a97-b0fe52715ffd|F.Cu",
+          ""
+        ]
+      ],
       "meta": {
         "version": 2
       },
@@ -648,7 +653,7 @@
         "uuid": "aa294e8c-6ec0-4a40-9993-950bbf2ffeff"
       }
     ],
-    "used_designators": "#PWR3",
+    "used_designators": "#PWR2,LED1,R3",
     "variants": []
   },
   "sheets": [
