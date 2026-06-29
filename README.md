@@ -41,7 +41,11 @@ homemade airtag that's genuinely pretty good
 
 ## Wiring diagram for flashing
 
+The standard way is a CP2102 USB-UART dongle wired straight to the flashing header (VCC, GND, TXD, RXD, EN, DTR):
+
 ![](doc/wiring.png)
+
+Alternatively, if you have an [Icepi Zero](https://www.crowdsupply.com/icy-electronics/icepi-zero) FPGA, you can use its onboard USB-UART bridge as the flasher. See [`software/fpga/`](software/fpga/).
 
 
 ## Gallery
