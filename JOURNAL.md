@@ -208,3 +208,13 @@ Here it is working!!!
 I made a collage when I was just starting out, so I'll make a collage here, as I'm about to submit.
 
 ![](https://cdn.hackclub.com/019e9f27-8860-72e0-8753-6938b8a95d32/ship_banner.png)
+
+
+# 6/28/2026 6 PM - Silkscreen rework and add LED
+
+_Time Spent: 0.3h_
+I mean, what it says. I added a yellow LED to gpio10 for debugging when firmware bring-up, and I changed the decorative silkscreen. Here's a picture of what it's looking like:
+
+![](https://cdn.hackclub.com/019f1116-6494-7cd6-9bbd-17739f78fc7e/Screenshot%202026-06-28%20at%206.53.25%E2%80%AFPM.png)
+
+For tomorrow, I'll re-check the flashing pins, re-check that I don't need a special transistor network, and then order the boards! And then work on the fpga flasher, which will be fun I guess.
