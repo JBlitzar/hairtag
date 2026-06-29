@@ -21,7 +21,7 @@
 /scripts/input
 /scripts/deployed
 
-# ESP-IDF
+# ESP-IDF (sdkconfig.defaults is committed; generated sdkconfig.* are not)
 sdkconfig
 sdkconfig.old
 sdkconfig.defaults.esp32-c3-devkitm-1

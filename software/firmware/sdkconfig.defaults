@@ -1,0 +1,24 @@
+# Bootloader: skip app-image SHA validation on deep-sleep wake and stay silent.
+# This removes ~100-200ms of CPU work (and UART log time) on every single wake.
+CONFIG_BOOTLOADER_SKIP_VALIDATE_IN_DEEP_SLEEP=y
+CONFIG_BOOTLOADER_LOG_LEVEL_NONE=y
+CONFIG_BOOTLOADER_LOG_LEVEL=0
+CONFIG_BOOT_ROM_LOG_ALWAYS_OFF=y
+
+# Application logging off in production (the esp32-c3-debug env re-enables it
+# at runtime via HAIRTAG_DEBUG, so prod pays zero logging cost per wake).
+CONFIG_LOG_DEFAULT_LEVEL_NONE=y
+CONFIG_LOG_DEFAULT_LEVEL=0
+
+# Flash
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+
+# NimBLE: broadcaster only. Disabling the other roles, security manager and
+# bond persistence trims init work, RAM and flash writes each wake.
+CONFIG_BT_ENABLED=y
+CONFIG_BT_NIMBLE_ENABLED=y
+CONFIG_BT_NIMBLE_ROLE_BROADCASTER=y
+CONFIG_BT_NIMBLE_ROLE_OBSERVER=n
+CONFIG_BT_NIMBLE_ROLE_CENTRAL=n
+CONFIG_BT_NIMBLE_ROLE_PERIPHERAL=n
+CONFIG_BT_NIMBLE_NVS_PERSIST=n
