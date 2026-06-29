@@ -57,7 +57,7 @@ https://github.com/user-attachments/assets/a9827342-8f9d-4dc0-8821-d6cf14613d8d
 
 ## Usage instructions
 
-See [`firmware/README.md`](firmware/README.md). It's quite involved.
+See [`software/README.md`](software/README.md). It's quite involved.
 
 
 ## Bom

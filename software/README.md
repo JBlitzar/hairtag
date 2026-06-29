@@ -14,7 +14,7 @@ For the sake of reproducibility, here's what to do:
 
 ## How it works
 
-1. `esp32c3-openhaystack/` runs on the ESP32-C3 and broadcasts BLE advertisements that Apple devices interpret as a Find My accessory.
+1. `firmware/` runs on the ESP32-C3 and broadcasts BLE advertisements that Apple devices interpret as a Find My accessory.
 2. `findmy/` runs on your computer, authenticates with Apple, and fetches/decrypts location reports from the Find My network.
 
 ## Prerequisites
@@ -43,10 +43,10 @@ curl http://localhost:6969
 
 ## Generate keys
 
-See instructions in the esp32c3 README: [`esp32c3-openhaystack/README.md`](esp32c3-openhaystack/README.md)
+See instructions in the firmware README: [`firmware/README.md`](firmware/README.md)
 
 ```bash
-cd esp32c3-openhaystack/
+cd firmware/
 uv sync
 uv run scripts/keygen.py
 ```
@@ -55,10 +55,10 @@ This creates a `.keys` file (e.g. `XXXXX.keys`) in the `scripts/output/` directo
 
 ## Flash the firmware
 
-Follow the instructions in [`esp32c3-openhaystack/README.md`](esp32c3-openhaystack/README.md). In short:
+Follow the instructions in [`firmware/README.md`](firmware/README.md). In short:
 
 ```bash
-cd esp32c3-openhaystack/
+cd firmware/
 # Build and flash firmware
 pio run -t upload
 # Write your keys to the device (copy your .keys file to scripts/input/ first)
