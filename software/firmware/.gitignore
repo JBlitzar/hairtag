@@ -24,8 +24,9 @@
 # ESP-IDF
 sdkconfig
 sdkconfig.old
-sdkconfig.defaults
 sdkconfig.defaults.esp32-c3-devkitm-1
+sdkconfig.esp32-c3-devkitm-1
+sdkconfig.esp32-c3-debug
 
 # Build artifacts
 build/
