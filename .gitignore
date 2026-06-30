@@ -34,3 +34,5 @@ auth.json
 reports.db
 
 *.pyc
+
+.ignored/*
