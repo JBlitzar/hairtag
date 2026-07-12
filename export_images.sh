@@ -77,28 +77,49 @@ for line in body.split('\n'):
 
 # Layer priority: lower = renders behind (painted first in SVG)
 # B.Cu(red) < B.Silk(pink) < F.Cu(blue) < F.Silk(yellow) < Edge.Cuts < Pads
+# Classify by the group's opening <g> style (not scanning all child content,
+# since KiCad sometimes embeds stray elements from other layers inside a group)
 def layer_priority(g):
-    colors = set(re.findall(r'#[0-9A-Fa-f]{6}', g))
-    has_c83434 = '#C83434' in colors       # B.Cu
-    has_e8b2a7 = '#E8B2A7' in colors       # B.Silkscreen
-    has_4d7fc4 = '#4D7FC4' in colors       # F.Cu
-    has_f2eda1 = '#F2EDA1' in colors       # F.Silkscreen
-    has_d0d2cd = '#D0D2CD' in colors       # Edge.Cuts
-    has_white  = '#FFFFFF' in colors        # Pads/Vias
+    # Extract the opening <g ...> tag and its style
+    g_tag = ''
+    for line in g.split('\n'):
+        g_tag += line + ' '
+        if '>' in line:
+            break
 
-    if has_c83434 and not has_e8b2a7 and not has_4d7fc4 and not has_f2eda1:
+    style_m = re.search(r'style="([^"]*)"', g_tag)
+    style = style_m.group(1) if style_m else ''
+
+    # Check fill/stroke colors in the group's own style
+    fill_m = re.search(r'fill:(#[0-9A-Fa-f]{6})', style)
+    stroke_m = re.search(r'stroke:(#[0-9A-Fa-f]{6})', style)
+    fill_color = fill_m.group(1) if fill_m else None
+    stroke_color = stroke_m.group(1) if stroke_m else None
+
+    # Also scan for distinctive colors that only appear in specific layers
+    has_e8b2a7 = '#E8B2A7' in g   # B.Silkscreen text fill
+    has_f2eda1 = '#F2EDA1' in g   # F.Silkscreen text stroke
+    has_d0d2cd = '#D0D2CD' in g   # Edge.Cuts
+    has_white  = '#FFFFFF' in g    # Pads/Vias
+
+    # Classify by fill color first (copper zones/pads), then stroke (traces)
+    if fill_color == '#C83434':
         return 0  # B.Cu
-    if has_e8b2a7 and not has_4d7fc4 and not has_f2eda1:
+    if fill_color == '#4D7FC4':
+        return 2  # F.Cu
+    if stroke_color == '#C83434':
+        return 0  # B.Cu traces
+    if stroke_color == '#4D7FC4':
+        return 2  # F.Cu traces
+    if has_e8b2a7:
         return 1  # B.Silkscreen
     if has_f2eda1:
-        return 3  # F.Silkscreen (even if mixed with F.Cu)
-    if has_4d7fc4 and not has_c83434 and not has_e8b2a7:
-        return 2  # F.Cu
+        return 3  # F.Silkscreen
     if has_d0d2cd:
         return 4  # Edge.Cuts
-    if has_white and not has_c83434 and not has_4d7fc4:
+    if has_white:
         return 5  # Pads/Vias
-    return -1     # Unknown - keep in front
+    return -1     # Unknown
 
 # Compute priorities and check if reordering is needed
 priorities = [layer_priority(g) for g in groups]
