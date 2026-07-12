@@ -44,8 +44,9 @@ sed -i '' "s/viewBox=\"[^\"]*\"/viewBox=\"$NEW_VX $NEW_VY $NEW_VW $NEW_VH\"/" "$
 sed -i '' 's/fill:#4D7FC4; fill-opacity:1.0000/fill:#4D7FC4; fill-opacity:0.6/g' "$OUT_DIR/pcb.svg"
 sed -i '' 's/fill:#C83434; fill-opacity:1.0000/fill:#C83434; fill-opacity:0.6/g' "$OUT_DIR/pcb.svg"
 
-# Reorder SVG groups so back layers (B.Silkscreen) render behind front layers (F.Cu, F.Silkscreen)
-# KiCad exports B.Silkscreen after F layers, causing it to paint on top
+# Reorder SVG groups so layers render in correct z-order (back to front):
+# B.Cu -> B.Silkscreen -> F.Cu -> F.Silkscreen -> Edge.Cuts -> Pads/Vias
+# KiCad does not guarantee this order in its SVG export
 python3 - "$OUT_DIR/pcb.svg" <<'PYEOF'
 import sys, re
 
@@ -53,11 +54,8 @@ path = sys.argv[1]
 with open(path, 'r') as f:
     content = f.read()
 
-# Split into: header, top-level <g> groups, footer
-# Top-level groups are direct children of <svg>
 header_match = re.search(r'^(.*?<svg[^>]*>)', content, re.DOTALL)
 footer_match = re.search(r'(</svg>\s*)$', content)
-
 if not header_match or not footer_match:
     sys.exit(0)
 
@@ -65,49 +63,66 @@ header = header_match.group(1)
 footer = footer_match.group(1)
 body = content[header_match.end():footer_match.start()]
 
-# Extract top-level <g> groups (only depth-1 groups)
+# Extract top-level <g> groups (depth-1 children of <svg>)
 groups = []
 depth = 0
 current = []
 for line in body.split('\n'):
-    stripped = line.strip()
-    depth += stripped.count('<g ') - stripped.count('</g>')
-    # Don't count self-closing or nested g's at wrong depth
+    s = line.strip()
+    depth += len(re.findall(r'<g[\s>]', s)) - s.count('</g>')
     current.append(line)
     if depth == 0 and current:
         groups.append('\n'.join(current))
         current = []
 
-# Classify groups by layer color
-B_SILK_COLOR = '#E8B2A7'
-F_CU_COLOR = '#4D7FC4'
+# Layer priority: lower = renders behind (painted first in SVG)
+# B.Cu(red) < B.Silk(pink) < F.Cu(blue) < F.Silk(yellow) < Edge.Cuts < Pads
+def layer_priority(g):
+    colors = set(re.findall(r'#[0-9A-Fa-f]{6}', g))
+    has_c83434 = '#C83434' in colors       # B.Cu
+    has_e8b2a7 = '#E8B2A7' in colors       # B.Silkscreen
+    has_4d7fc4 = '#4D7FC4' in colors       # F.Cu
+    has_f2eda1 = '#F2EDA1' in colors       # F.Silkscreen
+    has_d0d2cd = '#D0D2CD' in colors       # Edge.Cuts
+    has_white  = '#FFFFFF' in colors        # Pads/Vias
 
-def is_b_silkscreen(g):
-    return B_SILK_COLOR in g
+    if has_c83434 and not has_e8b2a7 and not has_4d7fc4 and not has_f2eda1:
+        return 0  # B.Cu
+    if has_e8b2a7 and not has_4d7fc4 and not has_f2eda1:
+        return 1  # B.Silkscreen
+    if has_f2eda1:
+        return 3  # F.Silkscreen (even if mixed with F.Cu)
+    if has_4d7fc4 and not has_c83434 and not has_e8b2a7:
+        return 2  # F.Cu
+    if has_d0d2cd:
+        return 4  # Edge.Cuts
+    if has_white and not has_c83434 and not has_4d7fc4:
+        return 5  # Pads/Vias
+    return -1     # Unknown - keep in front
 
-def is_f_cu(g):
-    return F_CU_COLOR in g and 'fill' in g.split('\n')[0]
+# Compute priorities and check if reordering is needed
+priorities = [layer_priority(g) for g in groups]
+needs_reorder = any(
+    priorities[i] > priorities[j]
+    for i in range(len(priorities))
+    for j in range(i+1, len(priorities))
+    if priorities[i] >= 0 and priorities[j] >= 0
+)
 
-b_silk_groups = [g for g in groups if is_b_silkscreen(g)]
-other_groups = [g for g in groups if not is_b_silkscreen(g)]
-
-# Find the index of the first F.Cu group in other_groups
-f_cu_idx = None
-for i, g in enumerate(other_groups):
-    if is_f_cu(g):
-        f_cu_idx = i
-        break
-
-# Insert B.Silkscreen groups just before F.Cu
-if f_cu_idx is not None and b_silk_groups:
-    reordered = other_groups[:f_cu_idx] + b_silk_groups + other_groups[f_cu_idx:]
+if needs_reorder:
+    tagged = [(priorities[i], i, g) for i, g in enumerate(groups)]
+    tagged.sort(key=lambda t: (t[0], t[1]))
+    reordered = [t[2] for t in tagged]
+    with open(path, 'w') as f:
+        f.write(header + '\n'.join(reordered) + footer)
+    counts = {}
+    for p in priorities:
+        names = {-1:'other', 0:'B.Cu', 1:'B.Silk', 2:'F.Cu', 3:'F.Silk', 4:'Edge.Cuts', 5:'Pads'}
+        n = names[p]
+        counts[n] = counts.get(n, 0) + 1
+    print(f"  Reordered layers: {dict(sorted(counts.items()))}")
 else:
-    reordered = other_groups + b_silk_groups
-
-with open(path, 'w') as f:
-    f.write(header + '\n'.join(reordered) + footer)
-
-print(f"  Reordered {len(b_silk_groups)} B.Silkscreen group(s) before F.Cu")
+    print("  Layers already in correct order")
 PYEOF
 
 # Add dark background
