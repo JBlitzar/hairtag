@@ -76,9 +76,12 @@ for line in body.split('\n'):
         current = []
 
 # Layer priority: lower = renders behind (painted first in SVG)
-# B.Cu(red) < B.Silk(pink) < F.Cu(blue) < F.Silk(yellow) < Edge.Cuts < Pads
+# B.Cu(blue) < B.Silk(pink) < F.Cu(red) < F.Silk(yellow) < Edge.Cuts < Pads
 # Classify by the group's opening <g> style (not scanning all child content,
 # since KiCad sometimes embeds stray elements from other layers inside a group)
+F_CU_COLORS = ('#C83434', '#A82E32', '#78262E')  # F.Cu traces / mask shades
+B_CU_COLOR = '#4D7FC4'
+
 def layer_priority(g):
     # Extract the opening <g ...> tag and its style
     g_tag = ''
@@ -103,14 +106,14 @@ def layer_priority(g):
     has_white  = '#FFFFFF' in g    # Pads/Vias
 
     # Classify by fill color first (copper zones/pads), then stroke (traces)
-    if fill_color == '#C83434':
-        return 0  # B.Cu
-    if fill_color == '#4D7FC4':
+    if fill_color in F_CU_COLORS:
         return 2  # F.Cu
-    if stroke_color == '#C83434':
-        return 0  # B.Cu traces
-    if stroke_color == '#4D7FC4':
+    if fill_color == B_CU_COLOR:
+        return 0  # B.Cu
+    if stroke_color in F_CU_COLORS:
         return 2  # F.Cu traces
+    if stroke_color == B_CU_COLOR:
+        return 0  # B.Cu traces
     if has_e8b2a7:
         return 1  # B.Silkscreen
     if has_f2eda1:
@@ -119,6 +122,17 @@ def layer_priority(g):
         return 4  # Edge.Cuts
     if has_white:
         return 5  # Pads/Vias
+
+    # Fallback: KiCad sometimes uses fill:#000000 as a wrapper group style
+    # while the actual content has copper fills. Scan child element styles.
+    child_fills = re.findall(r'fill:(#[0-9A-Fa-f]{6})', g)
+    has_f_cu_child = any(c in F_CU_COLORS for c in child_fills)
+    has_b_cu_child = B_CU_COLOR in child_fills
+    if has_f_cu_child and not has_b_cu_child:
+        return 2  # F.Cu content inside generic wrapper
+    if has_b_cu_child and not has_f_cu_child:
+        return 0  # B.Cu content inside generic wrapper
+
     return -1     # Unknown
 
 # Compute priorities and check if reordering is needed
