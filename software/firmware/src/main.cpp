@@ -5,7 +5,7 @@
 static uint32_t idx = 0;
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
     pinMode(LED_PIN, OUTPUT);
 }
 
