@@ -1,3 +1,6 @@
+# README copied from original repo. Not all this info is relevant. Also at this point the code has been heavily modified. 
+
+
 # ESP32C3 OpenHaystack
 
 [![PlatformIO](https://img.shields.io/badge/platform-PlatformIO-orange.svg)](https://platformio.org)
