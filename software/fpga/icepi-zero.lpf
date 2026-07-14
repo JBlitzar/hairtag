@@ -1,0 +1,29 @@
+SYSCONFIG CONFIG_IOVOLTAGE=3.3 COMPRESS_CONFIG=ON MCCLK_FREQ=62 MASTER_SPI_PORT=ENABLE SLAVE_SPI_PORT=DISABLE SLAVE_PARALLEL_PORT=DISABLE;
+
+# https://www.latticesemi.com/en/Support/AnswerDatabase/1/9/6/1964
+BLOCK RESETPATHS;
+BLOCK ASYNCPATHS;
+
+# Onboard FTDI USB-UART bridge
+LOCATE COMP "usb_tx" SITE "K15"; # Transmit to ftdi
+IOBUF  PORT "usb_tx" PULLMODE=UP IO_TYPE=LVCMOS33 DRIVE=4;
+LOCATE COMP "usb_rx" SITE "K16"; # Transmit from ftdi
+IOBUF  PORT "usb_rx" PULLMODE=UP IO_TYPE=LVCMOS33 DRIVE=4;
+LOCATE COMP "usb_rtsn" SITE "L16";
+IOBUF  PORT "usb_rtsn" IO_TYPE=LVCMOS33 DRIVE=4 PULLMODE=UP;
+LOCATE COMP "usb_dtrn" SITE "L15";
+IOBUF  PORT "usb_dtrn" IO_TYPE=LVCMOS33 DRIVE=4 PULLMODE=UP;
+
+# Flashing header to hairtag.
+# Hairtag header order:  VCC  GND  TXD  RXD  EN  DTR
+#   VCC -> Icepi 40-pin header 3V3 (pin 1 or 17)   [NOT a GPIO]
+#   GND -> Icepi 40-pin header GND (e.g. pin 9)
+#   the four signals below idle high so the ESP runs normally when idle.
+LOCATE COMP "flash_txd" SITE "T2"; # 40-pin header pin 3
+IOBUF  PORT "flash_txd" IO_TYPE=LVCMOS33 PULLMODE=UP DRIVE=4;
+LOCATE COMP "flash_rxd" SITE "R2"; # 40-pin header pin 5
+IOBUF  PORT "flash_rxd" IO_TYPE=LVCMOS33 PULLMODE=UP DRIVE=4;
+LOCATE COMP "flash_en" SITE "R1"; # 40-pin header pin 7
+IOBUF  PORT "flash_en" IO_TYPE=LVCMOS33 PULLMODE=UP DRIVE=4;
+LOCATE COMP "flash_dtr" SITE "R3"; # 40-pin header pin 11
+IOBUF  PORT "flash_dtr" IO_TYPE=LVCMOS33 PULLMODE=UP DRIVE=4;

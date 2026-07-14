@@ -23,7 +23,9 @@ For the sake of reproducibility, here's what to do:
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) running
 - [uv](https://docs.astral.sh/uv/) package manager
 - An Apple ID with SMS 2FA enabled
-- The flashing setup as described in [README.md](/README.md#wiring-diagram-for-flashing)
+- A flashing setup. Either:
+  - the CP2102 USB-UART dongle wired as described in [README.md](/README.md#wiring-diagram-for-flashing), or
+  - an Icepi Zero FPGA acting as the flasher, see [`fpga/`](fpga/)
 
 ## Anisette server
 
