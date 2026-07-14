@@ -53,7 +53,7 @@ void set_addr_from_key(uint8_t *addr, uint8_t *key) {
 }
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
 
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
