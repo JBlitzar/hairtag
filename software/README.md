@@ -20,7 +20,7 @@ For the sake of reproducibility, here's what to do:
 ## Prerequisites
 
 - macOS (special apple things)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) running
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) or [Orbstack](https://orbstack.dev/) running
 - [uv](https://docs.astral.sh/uv/) package manager
 - An Apple ID with SMS 2FA enabled
 - A flashing setup. Either:
@@ -63,8 +63,8 @@ Follow the instructions in [`firmware/README.md`](firmware/README.md). In short:
 cd firmware/
 # Build and flash firmware
 pio run -t upload
-# Write your keys to the device (copy your .keys file to scripts/input/ first)
-python3 scripts/keywriter.py
+# Write your keys to the device (copy your _keyfile file to scripts/input/ first)
+uv run scripts/keywriter.py
 ```
 
 After flashing and resetting, the device starts advertising immediately.
@@ -95,6 +95,8 @@ On success, the script saves `auth.json` in the `findmy/` directory. Subsequent 
 
 ## Query locations
 
+Copy your `.keys` file from `firmware/scripts/output` to `findmy/`
+
 ```bash
 cd findmy/
 ./locate.sh
@@ -113,7 +115,12 @@ missing: []
 
 The `goog` URL opens the location in Google Maps.
 
-a TODO for the future is to make this a nice TUI. 
+For a vibecoded UI, 
+
+```bash
+
+uv run server.py
+```
 
 ### Options
 

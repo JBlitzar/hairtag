@@ -33,8 +33,9 @@ are all reachable along one side of the 40-pin header:
 | EN  | pin 7  | R1 |
 | DTR | pin 11 | R3 |
 
-To move a signal to a different pin, edit the `LOCATE`/`IOBUF` lines in
-[`icepi-zero.lpf`](icepi-zero.lpf).
+
+![](https://i.sstatic.net/yHddo.png)
+
 
 ## Build and load
 
