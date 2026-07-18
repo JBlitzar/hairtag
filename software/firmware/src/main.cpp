@@ -7,8 +7,8 @@
 #include <esp_random.h>
 #include <driver/gpio.h>
 
-#define DELAY_IN_S      30
-#define ADV_DURATION_MS 50
+#define DELAY_IN_S      10
+#define ADV_DURATION_MS 1000
 #define REUSE_CYCLES    30
 
 static const char *LOG_TAG = "macless_haystack";
@@ -66,6 +66,9 @@ void setup() {
     digitalWrite((gpio_num_t)LED_PIN, HIGH);
     delay(1000);
     digitalWrite((gpio_num_t)LED_PIN, LOW);
+
+
+    Serial.print("hi!");
 
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
