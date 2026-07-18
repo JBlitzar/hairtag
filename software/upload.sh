@@ -58,7 +58,7 @@ CHIP_INFO=$("$PIO_PYTHON" -m esptool --port "$PORT" chip-id 2>&1 || true)
 CHIP_LINE=$(echo "$CHIP_INFO" | grep -i "Chip type:" || true)
 
 if echo "$CHIP_LINE" | grep -qi "ESP32-C3"; then
-    ENV="esp32-c3-devkitm-1"
+    ENV="hairtag-c3"
     echo "Detected: ESP32-C3  →  env:$ENV"
 elif echo "$CHIP_LINE" | grep -qi "ESP32-S3"; then
     echo "Error: ESP32-S3 not supported. Add an [env:esp32s3dev] to platformio.ini."

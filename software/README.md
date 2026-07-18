@@ -62,7 +62,7 @@ Follow the instructions in [`firmware/README.md`](firmware/README.md). In short:
 ```bash
 cd firmware/
 # Build and flash firmware
-pio run -t upload
+pio run -e hairtag-c3 -t upload
 # Write your keys to the device (copy your _keyfile file to scripts/input/ first)
 uv run scripts/keywriter.py
 ```
