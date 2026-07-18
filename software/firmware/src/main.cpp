@@ -5,6 +5,7 @@
 #include <esp_partition.h>
 #include <esp_log.h>
 #include <esp_random.h>
+#include <driver/gpio.h>
 
 #define DELAY_IN_S      30
 #define ADV_DURATION_MS 50
@@ -18,6 +19,10 @@ RTC_DATA_ATTR static uint8_t key_count = 0;
 RTC_DATA_ATTR static bool    rtc_valid = false;
 
 static uint8_t public_key[28];
+
+#define LED_PIN 10
+
+
 
 int load_bytes_from_partition(uint8_t *dst, size_t size, int offset) {
     const esp_partition_t *keypart = esp_partition_find_first(
@@ -54,6 +59,13 @@ void set_addr_from_key(uint8_t *addr, uint8_t *key) {
 
 void setup() {
     Serial.begin(9600);
+
+
+    gpio_hold_dis((gpio_num_t)LED_PIN);
+    pinMode((gpio_num_t)LED_PIN, OUTPUT);
+    digitalWrite((gpio_num_t)LED_PIN, HIGH);
+    delay(1000);
+    digitalWrite((gpio_num_t)LED_PIN, LOW);
 
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -145,6 +157,8 @@ void setup() {
     Serial.printf("Sleeping %ds\n", DELAY_IN_S);
     Serial.flush();
 
+
+    gpio_hold_en((gpio_num_t)LED_PIN);
     esp_sleep_enable_timer_wakeup((uint64_t)DELAY_IN_S * 1000000ULL);
     esp_deep_sleep_start();
 }

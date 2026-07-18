@@ -67,7 +67,7 @@ pio run -t upload
 uv run scripts/keywriter.py
 ```
 
-After flashing and resetting, the device starts advertising immediately.
+After flashing and resetting, the device starts advertising immediately. It'll take ~24h+ to actually start showing up in reports though.
 
 ## Create the reports database
 
