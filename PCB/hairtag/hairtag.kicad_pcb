@@ -12843,7 +12843,7 @@
 	(segment
 		(start 53.8 50.8)
 		(end 55.62 52.62)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "/LNA_IN")
 		(uuid "4813b96c-763d-48da-8bbd-ff629b170a6a")
@@ -12851,7 +12851,7 @@
 	(segment
 		(start 53.8 49.4)
 		(end 53.8 50.8)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "/LNA_IN")
 		(uuid "877484f5-9c8d-4cef-90e9-9187166a280b")
@@ -12859,7 +12859,7 @@
 	(segment
 		(start 55.62 52.62)
 		(end 55.62 53.1)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "/LNA_IN")
 		(uuid "b14500a0-4628-4ba5-9b2d-b5b38b0112a1")
@@ -12867,7 +12867,7 @@
 	(segment
 		(start 51 46.25)
 		(end 49.83 46.25)
-		(width 0.519)
+		(width 0.577)
 		(layer "F.Cu")
 		(net "Net-(AE1-ANT)")
 		(uuid "e9630c79-3009-4a6e-9f93-d892936a02fe")
@@ -12875,7 +12875,7 @@
 	(segment
 		(start 53.8 47.08794)
 		(end 53.60603 46.89397)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "Net-(C12-Pad2)")
 		(uuid "09b07d54-6ca7-4f77-b32f-4f1ce09008f7")
@@ -12883,7 +12883,7 @@
 	(segment
 		(start 53.8 47.2)
 		(end 53.8 48.2)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "Net-(C12-Pad2)")
 		(uuid "85211141-cf87-4a76-bf3a-f1fffc247521")
@@ -12891,7 +12891,7 @@
 	(segment
 		(start 53.41206 46.7)
 		(end 53.3 46.7)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "Net-(C12-Pad2)")
 		(uuid "9a5a76ac-9ab9-4248-b314-4f0a98d11524")
@@ -12899,7 +12899,7 @@
 	(segment
 		(start 52.35 46.7)
 		(end 53.3 46.7)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "Net-(C12-Pad2)")
 		(uuid "a5237c3b-4e77-4529-9296-04d63634ffa6")
@@ -12907,7 +12907,7 @@
 	(segment
 		(start 53.8 47.2)
 		(end 53.8 47.08794)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "Net-(C12-Pad2)")
 		(uuid "e88b5b08-9148-4703-b546-650a7b412398")
@@ -12915,7 +12915,7 @@
 	(segment
 		(start 51.9 46.25)
 		(end 52.35 46.7)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "Net-(C12-Pad2)")
 		(uuid "f5e79afc-ecaf-44a2-a3df-2dcac4e1eeea")
@@ -12923,7 +12923,7 @@
 	(segment
 		(start 53.60603 46.89397)
 		(end 53.41206 46.7)
-		(width 0.519)
+		(width 0.5766)
 		(layer "F.Cu")
 		(net "Net-(C12-Pad2)")
 		(uuid "fb3839cd-fc6d-4307-b48f-470bda925352")
