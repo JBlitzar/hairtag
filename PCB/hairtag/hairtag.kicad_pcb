@@ -432,7 +432,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C29266"
+		(property "LCSC Part" "C52923"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -1020,7 +1020,7 @@
 				(pins "1" "2")
 			)
 		)
-		(attr through_hole)
+		(attr through_hole exclude_from_bom dnp)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
 			(start -1.33 3.87)
@@ -1814,7 +1814,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C89811"
+		(property "LCSC Part" "C2286"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -2106,7 +2106,7 @@
 				)
 			)
 		)
-		(property "Value" "2nF"
+		(property "Value" "2nH"
 			(at 0 4 90)
 			(layer "F.Fab")
 			(uuid "5c4527b8-4e2c-4d98-8905-0afa056e5005")
@@ -2746,7 +2746,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C105872"
+		(property "LCSC Part" "C25744"
 			(at 0 0 45)
 			(layer "F.Fab")
 			(hide yes)
@@ -2971,7 +2971,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C105872"
+		(property "LCSC Part" "C25092"
 			(at 0 0 140)
 			(layer "F.Fab")
 			(hide yes)
@@ -3490,7 +3490,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C76769"
+		(property "LCSC Part" "C27143"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -4328,7 +4328,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C76769"
+		(property "LCSC Part" "C27123"
 			(at 0 0 45)
 			(layer "F.Fab")
 			(hide yes)
@@ -4336,6 +4336,7 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -4592,7 +4593,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C105872"
+		(property "LCSC Part" "C25744"
 			(at 0 0 130)
 			(layer "F.Fab")
 			(hide yes)
@@ -5382,7 +5383,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C105872"
+		(property "LCSC Part" "C25092"
 			(at 0 0 50)
 			(layer "F.Fab")
 			(hide yes)
@@ -6197,7 +6198,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C105872"
+		(property "LCSC Part" "C25104"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -6977,6 +6978,7 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -7153,7 +7155,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C105872"
+		(property "LCSC Part" "C25744"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -7976,7 +7978,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C29266"
+		(property "LCSC Part" "C1550"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -7984,6 +7986,7 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -12355,6 +12358,38 @@
 		(uuid "f55bed54-fc50-4b0c-a5e7-6b7bd9a2b979")
 	)
 	(segment
+		(start 53.8 48)
+		(end 53.8 47.68794)
+		(width 0.5766)
+		(layer "F.Cu")
+		(net "Net-(C12-Pad2)")
+		(uuid "0587b6c7-a678-441a-9f52-acb0f601418c")
+	)
+	(segment
+		(start 52.36206 46.25)
+		(end 53.10603 46.99397)
+		(width 0.5766)
+		(layer "F.Cu")
+		(net "Net-(C12-Pad2)")
+		(uuid "6141506f-4ca7-4837-8127-36327e3859d9")
+	)
+	(segment
+		(start 53.8 47.68794)
+		(end 53.10603 46.99397)
+		(width 0.5766)
+		(layer "F.Cu")
+		(net "Net-(C12-Pad2)")
+		(uuid "83c877e3-8ee0-44a3-826c-836ec5b9a631")
+	)
+	(segment
+		(start 51.9 46.25)
+		(end 52.36206 46.25)
+		(width 0.5766)
+		(layer "F.Cu")
+		(net "Net-(C12-Pad2)")
+		(uuid "ae11e81f-8caf-442d-88a9-5b64b8e68690")
+	)
+	(segment
 		(start 54.347202 57.741202)
 		(end 54.595 57.493404)
 		(width 0.2)
@@ -12579,6 +12614,14 @@
 		(uuid "fbafb677-a82b-422f-b7eb-14988ddf0015")
 	)
 	(segment
+		(start 51 46.25)
+		(end 49.83 46.25)
+		(width 0.577)
+		(layer "F.Cu")
+		(net "Net-(AE1-ANT)")
+		(uuid "e9630c79-3009-4a6e-9f93-d892936a02fe")
+	)
+	(segment
 		(start 55.62 53.1)
 		(end 55.62 52.62)
 		(width 0.5766)
@@ -12601,46 +12644,6 @@
 		(layer "F.Cu")
 		(net "/LNA_IN")
 		(uuid "c2f2d8c0-d407-4ce9-a138-b5b4e42336fb")
-	)
-	(segment
-		(start 51 46.25)
-		(end 49.83 46.25)
-		(width 0.577)
-		(layer "F.Cu")
-		(net "Net-(AE1-ANT)")
-		(uuid "e9630c79-3009-4a6e-9f93-d892936a02fe")
-	)
-	(segment
-		(start 53.8 48)
-		(end 53.8 47.68794)
-		(width 0.5766)
-		(layer "F.Cu")
-		(net "Net-(C12-Pad2)")
-		(uuid "0587b6c7-a678-441a-9f52-acb0f601418c")
-	)
-	(segment
-		(start 52.36206 46.25)
-		(end 53.10603 46.99397)
-		(width 0.5766)
-		(layer "F.Cu")
-		(net "Net-(C12-Pad2)")
-		(uuid "6141506f-4ca7-4837-8127-36327e3859d9")
-	)
-	(segment
-		(start 53.8 47.68794)
-		(end 53.10603 46.99397)
-		(width 0.5766)
-		(layer "F.Cu")
-		(net "Net-(C12-Pad2)")
-		(uuid "83c877e3-8ee0-44a3-826c-836ec5b9a631")
-	)
-	(segment
-		(start 51.9 46.25)
-		(end 52.36206 46.25)
-		(width 0.5766)
-		(layer "F.Cu")
-		(net "Net-(C12-Pad2)")
-		(uuid "ae11e81f-8caf-442d-88a9-5b64b8e68690")
 	)
 	(zone
 		(net "GND")

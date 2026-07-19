@@ -6594,7 +6594,7 @@
 				)
 			)
 		)
-		(property "Value" "2nF"
+		(property "Value" "2nH"
 			(at 78.71 68.58 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7262,7 +7262,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://lcsc.com/product-detail/_FC-1608YXK-585F08_C89811.html"
+		(property "Datasheet" "https://www.lcsc.com/product-detail/C2286.html"
 			(at 57.15 140.97 0)
 			(hide yes)
 			(show_name no)
@@ -7284,7 +7284,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "国星光电"
+		(property "Manufacturer" "Hubei KENTO Elec"
 			(at 57.15 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -7295,7 +7295,7 @@
 				)
 			)
 		)
-		(property "MPN" "NCD0603Y2"
+		(property "MPN" "KT-0603R"
 			(at 57.15 146.05 0)
 			(hide yes)
 			(show_name no)
@@ -7306,7 +7306,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C89811"
+		(property "LCSC Part" "C2286"
 			(at 57.15 148.59 0)
 			(hide yes)
 			(show_name no)
@@ -8620,7 +8620,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://lcsc.com/product-detail/HF-Inductors_muRata_LQG15HS2N7S02D_2-7nH-0-3nH_C77108.html"
+		(property "Datasheet" "https://www.lcsc.com/product-detail/C27123.html"
 			(at 265.43 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -8642,7 +8642,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "muRata(村田)"
+		(property "Manufacturer" "Sunlord(顺络)"
 			(at 267.97 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -8653,7 +8653,7 @@
 				)
 			)
 		)
-		(property "MPN" "LQG15HS2N7S02D"
+		(property "MPN" "SDCL1005C2N7STDF"
 			(at 270.51 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -8664,7 +8664,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C77108"
+		(property "LCSC Part" "C27123"
 			(at 273.05 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -9912,7 +9912,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://lcsc.com/product-detail/Others_YAGEO-CC0402BRNPO9BN1R0_C309455.html"
+		(property "Datasheet" "https://www.lcsc.com/product-detail/C1550.html"
 			(at 275.59 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -9934,7 +9934,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "YAGEO(国巨)"
+		(property "Manufacturer" "Guangdong Fenghua(风华高科)"
 			(at 278.13 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -9945,7 +9945,7 @@
 				)
 			)
 		)
-		(property "MPN" "CC0402BRNPO9BN1R0"
+		(property "MPN" "0402CG1R0C500NT"
 			(at 280.67 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -9956,7 +9956,7 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C309455"
+		(property "LCSC Part" "C1550"
 			(at 283.21 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -10293,10 +10293,10 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(in_pos_files yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "dc0d395a-f42a-457d-8764-0e0cfa6c2cb5")
 		(property "Reference" "USB1"
