@@ -34,7 +34,7 @@ are all reachable along one side of the 40-pin header:
 | DTR | pin 11 | R3 |
 
 
-![](https://i.sstatic.net/yHddo.png)
+![](https://cdn.hackclub.com/01a07e15-c6a5-76d1-a8ad-508d7a14ce9c/yHddo.png)
 
 
 ## Build and load
