@@ -7,7 +7,7 @@ uint8_t key[28] = { 0x1c, 0x4f, 0xe7, 0xea, 0x90, 0x86, 0xc2, 0x5d, 0xf7, 0x68, 
 
 void setup() {
     Serial.begin(9600);
-    // Serial.println("Starting...");
+    Serial.println("Starting...");
 
     pinMode(LED_PIN, OUTPUT);
 
@@ -17,7 +17,7 @@ void setup() {
         digitalWrite(LED_PIN, LOW);
         delay(100);
     }
-    delay(1000);
+    delay(500);
 
     NimBLEDevice::init("");
     for (int b = 0; b < 3; b++) {
@@ -26,59 +26,40 @@ void setup() {
         digitalWrite(LED_PIN, LOW);
         delay(100);
     }
-    delay(1000);
+    Serial.println("NimBLE init OK");
+
     NimBLEDevice::setPower(ESP_PWR_LVL_N6);
 
     uint8_t addr[6] = {
         key[5], key[4], key[3], key[2], key[1],
         (uint8_t)(key[0] | 0xC0)
     };
-
     NimBLEDevice::setOwnAddrType(BLE_OWN_ADDR_RANDOM);
-    int rc = ble_hs_id_set_rnd(addr);
-    Serial.printf("ble_hs_id_set_rnd rc=%d\n", rc);
+    ble_hs_id_set_rnd(addr);
+
+    NimBLEAdvertisementData adv;
+    std::string mfg;
+    mfg.append("\x4c\x00", 2);
+    mfg.append("\x12\x19", 2);
+    mfg.append("\x00", 1);
+    mfg.append((char *)&key[6], 22);
+    mfg += (char)(key[0] >> 6);
+    mfg.append("\x00", 1);
+    adv.setManufacturerData(mfg);
+
+    NimBLEAdvertising *a = NimBLEDevice::getAdvertising();
+    a->setAdvertisementData(adv);
+    a->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
+    bool started = a->start();
+
+    Serial.printf("started=%d\n", started);
     for (int b = 0; b < 4; b++) {
         digitalWrite(LED_PIN, HIGH);
         delay(100);
         digitalWrite(LED_PIN, LOW);
         delay(100);
     }
-    delay(1000);
-
-    NimBLEAdvertisementData adv;
-
-    std::string mfg;
-    mfg.append("\x4c\x00", 2);   // Apple
-    mfg.append("\x12\x19", 2);   // Find My / Offline Finding
-    mfg.append("\x00", 1);       // state
-    mfg.append((char *)&key[6], 22);
-    mfg += (char)(key[0] >> 6);
-    mfg.append("\x00", 1);       // hint
-
-    Serial.printf("mfg len=%d (expect 29)\n", mfg.size());
-    for (size_t n = 0; n < mfg.size(); n++) Serial.printf("%02x ", (uint8_t)mfg[n]);
-    Serial.println();
-
-    adv.setManufacturerData(mfg);
-
-    NimBLEAdvertising *a = NimBLEDevice::getAdvertising();
-    a->setAdvertisementData(adv);
-    a->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
-    for (int b = 0; b < 5; b++) {
-        digitalWrite(LED_PIN, HIGH);
-        delay(100);
-        digitalWrite(LED_PIN, LOW);
-        delay(100);
-    }
-    delay(1000);
-    bool started = a->start();
-
-    uint8_t used[6];
-    ble_hs_id_copy_addr(BLE_ADDR_RANDOM, used, NULL);
-    Serial.printf("started=%d mac=%02x:%02x:%02x:%02x:%02x:%02x\n", started,
-                  used[5], used[4], used[3], used[2], used[1], used[0]);
 }
-
 
 void loop() {
     digitalWrite(LED_PIN, HIGH);
