@@ -10,6 +10,7 @@ void setup() {
 
     i=0;
     NimBLEDevice::init("");
+    NimBLEDevice::setPower(ESP_PWR_LVL_N12);
 
     uint8_t addr[6] = {
         key[5], key[4], key[3], key[2], key[1],
@@ -39,6 +40,8 @@ void setup() {
     NimBLEAdvertising *a = NimBLEDevice::getAdvertising();
     a->setAdvertisementData(adv);
     a->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
+    a->setMinInterval(0x0640);   // 1000ms (0.625ms units)
+    a->setMaxInterval(0x0C80);   // 2000ms (0.625ms units)
     bool started = a->start();
 
     uint8_t used[6];
