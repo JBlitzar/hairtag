@@ -39,3 +39,5 @@ reports.db
 /software/firmware/.cache
 software/firmware/compile_commands.json
 /software/firmware-nrf52840/.pio
+/software/firmware-nrf52840/.vscode
+/software/firmware-nrf52840/build
