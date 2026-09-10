@@ -136,6 +136,7 @@ if __name__ == "__main__":
         res.extend(key_res)
         print(f"  {name}: {r.status_code}, {len(key_res)} reports")
     print(f"Total: {len(res)} reports received.")
+    # print(res)
 
     ordered = []
     found = set()
