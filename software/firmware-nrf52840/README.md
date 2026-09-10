@@ -1,6 +1,6 @@
 ## Method
 
-Click build
+Click build (incremental build will always fail, pristine build mostly doesn't fail but sometimes does. It if fails, rebuild it lol)
 
 Re-plug xiao, double click RST
 
