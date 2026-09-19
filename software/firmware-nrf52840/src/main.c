@@ -54,8 +54,12 @@ int main(void)
         BT_DATA(BT_DATA_MANUFACTURER_DATA, mfg_data, idx),
     };
 
-    struct bt_le_adv_param adv_param = *BT_LE_ADV_NCONN_IDENTITY;
-
+    struct bt_le_adv_param adv_param = BT_LE_ADV_PARAM_INIT(
+        BT_LE_ADV_OPT_USE_IDENTITY,
+        1600,  // 1000 ms min
+        3200,  // 2000ms max
+        NULL
+    );
     err = bt_le_adv_start(&adv_param, ad, ARRAY_SIZE(ad), NULL, 0);
     bool started = (err == 0);
 
