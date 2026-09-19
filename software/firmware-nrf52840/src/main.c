@@ -18,15 +18,8 @@ int main(void)
 {
     int err;
 
-    printk("Starting...\n");
-
     i = 0;
 
-    
-
-    /* addr[6] built as { key[5], key[4], key[3], key[2], key[1],
-     *                    (key[0] | 0xC0) } — matches the corrected
-     * NimBLE array (top two bits of the top byte set = static addr). */
     bt_addr_le_t addr;
 
     addr.type = BT_ADDR_LE_RANDOM;
@@ -38,15 +31,12 @@ int main(void)
     addr.a.val[5] = key[0] | 0xC0;
 
     err = bt_id_create(&addr, NULL);
-    printk("ble_hs_id_set_rnd rc=%d\n", err);
 
     err = bt_enable(NULL);
     if (err) {
-        printk("bt_enable failed (err %d)\n", err);
         return 0;
     }
 
-    /* mfg.append(...) calls, in order */
     size_t idx = 0;
 
     mfg_data[idx++] = 0x4c;
@@ -59,11 +49,6 @@ int main(void)
     mfg_data[idx++] = (uint8_t)(key[0] >> 6);
     mfg_data[idx++] = 0x00;   /* hint */
 
-    printk("mfg len=%d (expect 29)\n", (int)idx);
-    for (size_t n = 0; n < idx; n++) {
-        printk("%02x ", mfg_data[n]);
-    }
-    printk("\n");
 
     struct bt_data ad[] = {
         BT_DATA(BT_DATA_MANUFACTURER_DATA, mfg_data, idx),
@@ -81,16 +66,6 @@ int main(void)
     bt_id_get(used_addrs, &count);
     if (count > 0) {
         memcpy(used, used_addrs[0].a.val, 6);
-    }
-
-    printk("started=%d mac=%02x:%02x:%02x:%02x:%02x:%02x\n", started,
-           used[5], used[4], used[3], used[2], used[1], used[0]);
-
-    /* loop() */
-    while (1) {
-        k_sleep(K_MSEC(2000));
-        printk("Hello, ohs! %d\n", i);
-        i++;
     }
 
     return 0;
