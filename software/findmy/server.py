@@ -9,6 +9,7 @@ import os
 import sqlite3
 import struct
 import subprocess
+import sys
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import ec
@@ -190,10 +191,10 @@ def raw_txt():
 def api_refresh():
     try:
         result = subprocess.run(
-            ["uv", "run", "python", "request_reports.py", "--hours", "168"],
+            [sys.executable, "request_reports.py", "--hours", "168"],
             capture_output=True,
             text=True,
-            timeout=60,
+            timeout=120,
             cwd=BASE_DIR,
         )
         return jsonify({"ok": result.returncode == 0, "output": result.stdout[-500:]})
