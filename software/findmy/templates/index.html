@@ -209,7 +209,7 @@
                 const hours = document.getElementById("range-select").value;
                 document.getElementById("status-bar").textContent = "Loading…";
 
-                const resp = await fetch(`/api/reports?hours=${hours}`);
+                const resp = await fetch(`api/reports?hours=${hours}`);
                 const reports = await resp.json();
 
                 clearLayers();
@@ -299,7 +299,7 @@
                     btn.disabled = true;
                     status.textContent = "Fetching from Apple…";
                     try {
-                        const resp = await fetch("/api/refresh", {
+                        const resp = await fetch("api/refresh", {
                             method: "POST",
                         });
                         const data = await resp.json();
