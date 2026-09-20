@@ -31,6 +31,7 @@ fp-info-cache
 
 auth.json
 *.keys
+*.keys.json
 reports.db
 
 *.pyc
@@ -41,4 +42,6 @@ software/firmware/compile_commands.json
 /software/firmware-nrf52840/.pio
 /software/firmware-nrf52840/.vscode
 /software/firmware-nrf52840/build
+/software/firmware-nrf52840/src/keys.h
+/software/firmware-nrf52840/scripts/output
 software/firmware-nrf52840/scripts/test_btmon.sh
