@@ -4,6 +4,7 @@ import base64
 import datetime
 import glob
 import hashlib
+import json
 import os
 import sqlite3
 import struct
@@ -20,9 +21,9 @@ DB_PATH = os.path.join(BASE_DIR, "reports.db")
 
 
 def load_privkeys():
-    """Return {hashed_adv_b64: (priv_b64, short_name)} for all .keys files."""
+    """Return {hashed_adv_b64: (priv_b64, short_name)} for all key files."""
     keys = {}
-    for keyfile in glob.glob(os.path.join(BASE_DIR, "*.keys")):
+    for keyfile in glob.glob(os.path.join(BASE_DIR, "**", "*.keys"), recursive=True):
         with open(keyfile) as f:
             priv = hashed = ""
             name = os.path.basename(keyfile)[:-5]
@@ -34,6 +35,12 @@ def load_privkeys():
                     hashed = k[1]
             if priv and hashed:
                 keys[hashed] = (priv, name)
+    for keyfile in glob.glob(os.path.join(BASE_DIR, "**", "*.keys.json"), recursive=True):
+        with open(keyfile) as f:
+            composite = json.load(f)
+        base = composite.get("name", os.path.basename(keyfile)[:-10])
+        for k in composite["keys"]:
+            keys[k["hashed"]] = (k["private"], f"{base}-{k['hashed'][:7]}")
     return keys
 
 

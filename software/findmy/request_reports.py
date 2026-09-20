@@ -77,9 +77,6 @@ if __name__ == "__main__":
         default=24,
     )
     parser.add_argument(
-        "-p", "--prefix", help="only use keyfiles starting with this prefix", default=""
-    )
-    parser.add_argument(
         "-r", "--regen", help="regenerate search-party-token", action="store_true"
     )
     parser.add_argument(
@@ -95,9 +92,8 @@ if __name__ == "__main__":
 
     privkeys = {}
     names = {}
-    for keyfile in glob.glob(
-        os.path.dirname(os.path.realpath(__file__)) + "/" + args.prefix + "*.keys"
-    ):
+
+    for keyfile in glob.glob(os.path.join(os.path.dirname(os.path.realpath(__file__)),"keys", "*.keys")):
         with open(keyfile) as f:
             hashed_adv = priv = ""
             name = os.path.basename(keyfile)[:-5]
@@ -113,6 +109,13 @@ if __name__ == "__main__":
                 names[hashed_adv] = name
             else:
                 print(f"Couldn't find key pair in {keyfile}")
+    for keyfile in glob.glob(os.path.join(os.path.dirname(os.path.realpath(__file__)),"keys", "*.keys.json")):
+        with open(keyfile) as f:
+            composite = json.load(f)
+        base = composite.get("name", os.path.basename(keyfile)[:-10])
+        for k in composite["keys"]:
+            privkeys[k["hashed"]] = k["private"]
+            names[k["hashed"]] = f"{base}-{k['hashed'][:7]}"
 
     unixEpoch = int(datetime.datetime.now().strftime("%s"))
     startdate = unixEpoch - (60 * 60 * args.hours)
@@ -123,28 +126,23 @@ if __name__ == "__main__":
     )
     anisette_headers = generate_anisette_headers()
 
-    res = []
-    for hashed_adv, name in names.items():
-        data = {
-            "search": [
-                {
-                    "startDate": startdate * 1000,
-                    "endDate": unixEpoch * 1000,
-                    "ids": [hashed_adv],
-                }
-            ]
-        }
-        r = requests.post(
-            "https://gateway.icloud.com/acsnservice/fetch",
-            auth=auth_creds,
-            headers=anisette_headers,
-            json=data,
-        )
-        key_res = json.loads(r.content.decode())["results"]
-        res.extend(key_res)
-        print(f"  {name}: {r.status_code}, {len(key_res)} reports")
-    print(f"Total: {len(res)} reports received.")
-    # print(res)
+    data = {
+        "search": [
+            {
+                "startDate": startdate * 1000,
+                "endDate": unixEpoch * 1000,
+                "ids": list(names.keys()),
+            }
+        ]
+    }
+    r = requests.post(
+        "https://gateway.icloud.com/acsnservice/fetch",
+        auth=auth_creds,
+        headers=anisette_headers,
+        json=data,
+    )
+    res = json.loads(r.content.decode())["results"]
+    print(f"{r.status_code}: {len(res)} reports received for {len(names)} keys.")
 
     ordered = []
     found = set()
