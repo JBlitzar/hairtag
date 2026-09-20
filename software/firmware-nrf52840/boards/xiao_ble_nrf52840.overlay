@@ -1,0 +1,22 @@
+#include <zephyr/dt-bindings/adc/adc.h>
+#include <zephyr/dt-bindings/adc/nrf-saadc.h>
+
+/ {
+	zephyr,user {
+		io-channels = <&adc 7>;
+	};
+};
+
+&adc {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	channel@7 {
+		reg = <7>;
+		zephyr,gain = "ADC_GAIN_1_6";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40)>;
+		zephyr,input-positive = <NRF_SAADC_AIN7>; /* P0.31, battery divider */
+		zephyr,resolution = <12>;
+	};
+};
