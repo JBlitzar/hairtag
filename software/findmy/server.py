@@ -13,7 +13,7 @@ import subprocess
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, Response, jsonify, render_template, request
 
 app = Flask(__name__)
 
@@ -140,6 +140,50 @@ def api_reports():
         )
 
     return jsonify(results)
+
+
+@app.route("/raw.txt")
+def raw_txt():
+    hours = request.args.get("hours", 24, type=int)
+    cutoff = int(datetime.datetime.now().timestamp()) - hours * 3600
+
+    privkeys = load_privkeys()
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id_short, timestamp, payload, id FROM reports WHERE timestamp >= ? ORDER BY timestamp ASC",
+        (cutoff,),
+    )
+    rows = cur.fetchall()
+    conn.close()
+
+    lines = []
+    for row in rows:
+        hashed_adv = row["id"]
+        if hashed_adv not in privkeys:
+            continue
+        priv_b64, name = privkeys[hashed_adv]
+        try:
+            lat, lon, conf, status, batt_mv = decrypt_payload(row["payload"], priv_b64)
+        except Exception:
+            continue
+
+        lines.append(json.dumps({
+            "key": name,
+            "lat": lat,
+            "lon": lon,
+            "conf": conf,
+            "status": status,
+            "batt_mv": batt_mv,
+            "timestamp": row["timestamp"],
+            "isodatetime": datetime.datetime.fromtimestamp(
+                row["timestamp"]
+            ).isoformat(),
+        }))
+
+    return Response("\n".join(lines), mimetype="text/plain")
 
 
 @app.route("/api/refresh", methods=["POST"])
