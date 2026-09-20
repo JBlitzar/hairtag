@@ -38,7 +38,15 @@ def decode_tag(data):
     longitude = struct.unpack(">i", data[4:8])[0] / 10000000.0
     confidence = int.from_bytes(data[8:9], "big")
     status = int.from_bytes(data[9:10], "big")
-    return {"lat": latitude, "lon": longitude, "conf": confidence, "status": status}
+    batt_code = ((status & 0xF0) >> 2) | (status & 0x03)
+    batt_mv = 2500 + batt_code * 1700 // 63
+    return {
+        "lat": latitude,
+        "lon": longitude,
+        "conf": confidence,
+        "status": status,
+        "batt_mv": batt_mv,
+    }
 
 
 def getAuth(regenerate=False, second_factor="sms"):
@@ -136,6 +144,7 @@ if __name__ == "__main__":
         res.extend(key_res)
         print(f"  {name}: {r.status_code}, {len(key_res)} reports")
     print(f"Total: {len(res)} reports received.")
+    # print(res)
 
     ordered = []
     found = set()
@@ -149,7 +158,7 @@ if __name__ == "__main__":
         timestamp = int.from_bytes(data[0:4], "big") + 978307200
         # Patched: Apple no longer returns datePublished in all responses
         sq3.execute(
-            f"INSERT OR IGNORE INTO reports VALUES ('{names[report['id']]}', {timestamp}, {report.get('datePublished', 0)}, '{report['payload']}', '{report['id']}', {report['statusCode']})"
+            f"INSERT OR IGNORE INTO reports VALUES ('{names[report['id']]}', {timestamp}, {report.get('datePublished', 0)}, '{report['payload']}', '{report['id']}', {report['statusCode']}, -1)"
         )
         if timestamp >= startdate:
             eph_key = ec.EllipticCurvePublicKey.from_encoded_point(
@@ -168,6 +177,10 @@ if __name__ == "__main__":
                 enc_data, algorithms.AES(decryption_key), modes.GCM(iv, auth_tag)
             )
             tag = decode_tag(decrypted)
+            sq3.execute(
+                "UPDATE reports SET batt_mv = ? WHERE payload = ?",
+                (tag["batt_mv"], report["payload"]),
+            )
             tag["timestamp"] = timestamp
             tag["isodatetime"] = datetime.datetime.fromtimestamp(timestamp).isoformat()
             tag["key"] = names[report["id"]]
@@ -235,7 +248,7 @@ if __name__ == "__main__":
     if ordered:
         tbl = PrettyTable()
         tbl.set_style(TableStyle.SINGLE_BORDER)
-        tbl.field_names = ["Key", "Time", "Lat", "Lon", "Conf", "Map"]
+        tbl.field_names = ["Key", "Time", "Lat", "Lon", "Conf", "Batt", "Map"]
         tbl.align = "l"
         tbl.max_width = 60
         for rep in ordered:
@@ -246,6 +259,7 @@ if __name__ == "__main__":
                     f"{rep['lat']}",
                     f"{rep['lon']}",
                     rep["conf"],
+                    f"{rep['batt_mv']}mV",
                     rep["goog"],
                 ]
             )

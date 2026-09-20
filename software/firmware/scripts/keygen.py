@@ -38,14 +38,14 @@ def int_to_bytes(n, length, endianess='big'):
 
 
 def to_C_byte_array(adv_key, isV3):
-    out = '{'
+    out = '{ '
     for element in range(0, len(adv_key)):
         e = adv_key[element] if isV3 else ord(adv_key[element])
         out = out + "0x{:02x}".format(e)
         if element != len(adv_key)-1:
-            out = out + ','
+            out = out + ', '
 
-    out = out + '}'
+    out = out + ' }'
     return out
 
 
@@ -150,6 +150,7 @@ while i < args.nkeys:
         print('Private key: %s' % priv_b64)
         print('Advertisement key: %s' % adv_b64)
         print('Hashed adv key: %s' % s256_b64)
+        print('uint8_t key[28] = %s' % to_C_byte_array(adv_bytes, isV3))
 
     if '/' in s256_b64[:7]:
         print(

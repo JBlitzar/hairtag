@@ -68,7 +68,9 @@ def decrypt_payload(payload_b64, priv_b64):
     lon = struct.unpack(">i", decrypted[4:8])[0] / 10000000.0
     conf = int.from_bytes(decrypted[8:9], "big")
     status = int.from_bytes(decrypted[9:10], "big")
-    return lat, lon, conf, status
+    batt_code = ((status & 0xF0) >> 2) | (status & 0x03)
+    batt_mv = 2500 + batt_code * 1700 // 63
+    return lat, lon, conf, status, batt_mv
 
 
 @app.route("/")
@@ -110,7 +112,7 @@ def api_reports():
             continue
         priv_b64, name = privkeys[hashed_adv]
         try:
-            lat, lon, conf, status = decrypt_payload(row["payload"], priv_b64)
+            lat, lon, conf, status, batt_mv = decrypt_payload(row["payload"], priv_b64)
         except Exception:
             continue
 
@@ -121,6 +123,7 @@ def api_reports():
                 "lon": lon,
                 "conf": conf,
                 "status": status,
+                "batt_mv": batt_mv,
                 "timestamp": row["timestamp"],
                 "isodatetime": datetime.datetime.fromtimestamp(
                     row["timestamp"]
