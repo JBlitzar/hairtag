@@ -141,6 +141,11 @@ if __name__ == "__main__":
         headers=anisette_headers,
         json=data,
     )
+    if r.status_code != 200:
+        print(f"ERROR: Apple fetch returned HTTP {r.status_code}")
+        print(f"Response: {r.content[:500].decode('utf-8', errors='replace')}")
+        print("The searchPartyToken may need to be regenerated with --regen")
+        exit(1)
     res = json.loads(r.content.decode())["results"]
     print(f"{r.status_code}: {len(res)} reports received for {len(names)} keys.")
 
