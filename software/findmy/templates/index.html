@@ -145,6 +145,7 @@
                 </select>
                 <button id="fit-btn">Fit to reports</button>
                 <button id="refresh-btn">Refresh</button>
+                <button id="fetch-btn">Fetch from Apple</button>
             </div>
 
             <div id="tag-list">
@@ -290,6 +291,27 @@
             document
                 .getElementById("fit-btn")
                 .addEventListener("click", fitAll);
+            document
+                .getElementById("fetch-btn")
+                .addEventListener("click", async () => {
+                    const btn = document.getElementById("fetch-btn");
+                    const status = document.getElementById("status-bar");
+                    btn.disabled = true;
+                    status.textContent = "Fetching from Apple…";
+                    try {
+                        const resp = await fetch("/api/refresh", {
+                            method: "POST",
+                        });
+                        const data = await resp.json();
+                        status.textContent = data.ok
+                            ? "Fetch complete"
+                            : "Fetch failed";
+                        if (data.ok) await loadReports();
+                    } catch {
+                        status.textContent = "Fetch failed";
+                    }
+                    btn.disabled = false;
+                });
 
             loadReports().then(fitAll);
         </script>

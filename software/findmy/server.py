@@ -8,6 +8,7 @@ import json
 import os
 import sqlite3
 import struct
+import subprocess
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import ec
@@ -139,6 +140,21 @@ def api_reports():
         )
 
     return jsonify(results)
+
+
+@app.route("/api/refresh", methods=["POST"])
+def api_refresh():
+    try:
+        result = subprocess.run(
+            ["uv", "run", "python", "request_reports.py", "--hours", "168"],
+            capture_output=True,
+            text=True,
+            timeout=60,
+            cwd=BASE_DIR,
+        )
+        return jsonify({"ok": result.returncode == 0, "output": result.stdout[-500:]})
+    except subprocess.TimeoutExpired:
+        return jsonify({"ok": False, "error": "timeout"}), 504
 
 
 if __name__ == "__main__":
