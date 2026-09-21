@@ -6,15 +6,15 @@
 #include <zephyr/bluetooth/addr.h>
 #include <zephyr/drivers/adc.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/pm/device_runtime.h>
 #include <string.h>
 
-static uint8_t key[28] = {
-    0x1c, 0x4f, 0xe7, 0xea, 0x90, 0x86, 0xc2, 0x5d, 0xf7, 0x68, 0xb7, 0x9d,
-    0x57, 0x34, 0x5b, 0x5e, 0x52, 0xeb, 0xe6, 0xb7, 0xc4, 0xaf, 0xa4, 0x59,
-    0xb7, 0xdc, 0xe7, 0x10
-};
+#include "keys.h"
 
-static int i;
+#ifndef KEY_ROTATION_INTERVAL_MS
+#define KEY_ROTATION_INTERVAL_MS (3 * 60 * 60 * 1000)
+#endif
+
 static uint8_t mfg_data[29];
 
 static struct bt_data ad[] = {
@@ -49,12 +49,18 @@ static int battery_mv(void)
         .resolution = 12,
     };
 
+    if (pm_device_runtime_get(adc_dev) < 0) {
+        return -1;
+    }
     if (adc_channel_setup_dt(&vbat_channel) < 0) {
+        pm_device_runtime_put(adc_dev);
         return -1;
     }
     if (adc_read(adc_dev, &seq) < 0) {
+        pm_device_runtime_put(adc_dev);
         return -1;
     }
+    pm_device_runtime_put(adc_dev);
     mv = raw;
     if (adc_raw_to_millivolts(adc_ref_internal(adc_dev),
                               vbat_channel.channel_cfg.gain, 12, &mv) < 0) {
@@ -80,23 +86,38 @@ static void update_status_byte(void)
     mfg_data[STATUS_IDX] = ((v & 0x3c) << 2) | STATUS_FIXED | (v & 0x03);
 }
 
+static void set_key(int idx, bt_addr_le_t *addr)
+{
+    const uint8_t *key = keys[idx];
+
+    addr->type = BT_ADDR_LE_RANDOM;
+    addr->a.val[0] = key[5];
+    addr->a.val[1] = key[4];
+    addr->a.val[2] = key[3];
+    addr->a.val[3] = key[2];
+    addr->a.val[4] = key[1];
+    addr->a.val[5] = key[0] | 0xC0;
+
+    mfg_data[0] = 0x4c;
+    mfg_data[1] = 0x00;   /* Apple */
+    mfg_data[2] = 0x12;
+    mfg_data[3] = 0x19;   /* Find My / Offline Finding */
+    /* mfg_data[4] is the battery status byte, managed separately */
+    memcpy(&mfg_data[5], &key[6], 22);
+    mfg_data[27] = (uint8_t)(key[0] >> 6);
+    mfg_data[28] = 0x00;   /* hint */
+}
+
 int main(void)
 {
     int err;
 
-    i = 0;
-
     bt_addr_le_t addr;
+    int key_idx = 0;
+    int rot_id = -1;
 
-    addr.type = BT_ADDR_LE_RANDOM;
-    addr.a.val[0] = key[5];
-    addr.a.val[1] = key[4];
-    addr.a.val[2] = key[3];
-    addr.a.val[3] = key[2];
-    addr.a.val[4] = key[1];
-    addr.a.val[5] = key[0] | 0xC0;
-
-    err = bt_id_create(&addr, NULL);
+    set_key(0, &addr);
+    bt_id_create(&addr, NULL);
 
     err = bt_enable(NULL);
     if (err) {
@@ -105,18 +126,7 @@ int main(void)
 
     gpio_pin_configure(gpio0_dev, 14, GPIO_OUTPUT | GPIO_OUTPUT_INIT_LOW);
 
-    size_t idx = 0;
-
-    mfg_data[idx++] = 0x4c;
-    mfg_data[idx++] = 0x00;   /* Apple */
-    mfg_data[idx++] = 0x12;
-    mfg_data[idx++] = 0x19;   /* Find My / Offline Finding */
-    mfg_data[idx++] = 0x00;   /* status, filled below */
-    memcpy(&mfg_data[idx], &key[6], 22);
-    idx += 22;
-    mfg_data[idx++] = (uint8_t)(key[0] >> 6);
-    mfg_data[idx++] = 0x00;   /* hint */
-
+    mfg_data[STATUS_IDX] = STATUS_FIXED;
     update_status_byte();
 
     struct bt_le_adv_param adv_param = BT_LE_ADV_PARAM_INIT(
@@ -126,21 +136,28 @@ int main(void)
         NULL
     );
     err = bt_le_adv_start(&adv_param, ad, ARRAY_SIZE(ad), NULL, 0);
-    bool started = (err == 0);
-
-    uint8_t used[6];
-    bt_addr_le_t used_addrs[CONFIG_BT_ID_MAX];
-    size_t count = 1;
-
-    bt_id_get(used_addrs, &count);
-    if (count > 0) {
-        memcpy(used, used_addrs[0].a.val, 6);
-    }
 
     while (1) {
         k_sleep(K_MINUTES(1));
-        update_status_byte();
-        bt_le_adv_update_data(ad, ARRAY_SIZE(ad), NULL, 0);
+
+        int next = (int)((k_uptime_get() / KEY_ROTATION_INTERVAL_MS) % KEY_COUNT);
+
+        if (next != key_idx) {
+            key_idx = next;
+            bt_le_adv_stop();
+            set_key(key_idx, &addr);
+            if (rot_id < 0) {
+                rot_id = bt_id_create(&addr, NULL);
+                adv_param.id = rot_id;
+            } else {
+                bt_id_reset(rot_id, &addr, NULL);
+            }
+            update_status_byte();
+            bt_le_adv_start(&adv_param, ad, ARRAY_SIZE(ad), NULL, 0);
+        } else {
+            update_status_byte();
+            bt_le_adv_update_data(ad, ARRAY_SIZE(ad), NULL, 0);
+        }
     }
 
     return 0;
