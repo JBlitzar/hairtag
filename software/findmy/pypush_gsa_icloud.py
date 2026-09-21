@@ -156,7 +156,12 @@ def gsa_authenticated_request(parameters):
         timeout=5,
     )
 
-    return plist.loads(resp.content)["Response"]
+    try:
+        return plist.loads(resp.content)["Response"]
+    except Exception:
+        print(f"GSA request failed: HTTP {resp.status_code}")
+        print(f"Response: {resp.content[:500]}")
+        raise
 
 
 def generate_cpd():

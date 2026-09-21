@@ -124,25 +124,36 @@ if __name__ == "__main__":
         regenerate=args.regen,
         second_factor="trusted_device" if args.trusteddevice else "sms",
     )
-    anisette_headers = generate_anisette_headers()
 
-    data = {
-        "search": [
-            {
-                "startDate": startdate * 1000,
-                "endDate": unixEpoch * 1000,
-                "ids": list(names.keys()),
-            }
-        ]
-    }
-    r = requests.post(
-        "https://gateway.icloud.com/acsnservice/fetch",
-        auth=auth_creds,
-        headers=anisette_headers,
-        json=data,
-    )
-    res = json.loads(r.content.decode())["results"]
-    print(f"{r.status_code}: {len(res)} reports received for {len(names)} keys.")
+    all_ids = list(names.keys())
+    BATCH_SIZE = 20
+    res = []
+    for i in range(0, len(all_ids), BATCH_SIZE):
+        batch = all_ids[i:i + BATCH_SIZE]
+        data = {
+            "search": [
+                {
+                    "startDate": startdate * 1000,
+                    "endDate": unixEpoch * 1000,
+                    "ids": batch,
+                }
+            ]
+        }
+        r = requests.post(
+            "https://gateway.icloud.com/acsnservice/fetch",
+            auth=auth_creds,
+            headers=generate_anisette_headers(),
+            json=data,
+        )
+        if r.status_code != 200:
+            print(f"ERROR: Apple fetch returned HTTP {r.status_code}")
+            print(f"Response: {r.content[:500].decode('utf-8', errors='replace')}")
+            print("The searchPartyToken may need to be regenerated with --regen")
+            exit(1)
+        batch_res = json.loads(r.content.decode())["results"]
+        res.extend(batch_res)
+        print(f"  batch {i // BATCH_SIZE + 1}: {len(batch_res)} reports for {len(batch)} keys")
+    print(f"{len(res)} total reports received for {len(names)} keys.")
 
     ordered = []
     found = set()

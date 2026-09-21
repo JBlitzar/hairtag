@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <base href="/findmy/" />
         <title>hairtag map</title>
         <link
             rel="stylesheet"
@@ -145,6 +146,8 @@
                 </select>
                 <button id="fit-btn">Fit to reports</button>
                 <button id="refresh-btn">Refresh</button>
+                <button id="fetch-btn">Fetch from Apple</button>
+                <a href="raw.txt?hours=168" target="_blank"><button>Raw</button></a>
             </div>
 
             <div id="tag-list">
@@ -208,7 +211,7 @@
                 const hours = document.getElementById("range-select").value;
                 document.getElementById("status-bar").textContent = "Loading…";
 
-                const resp = await fetch(`/api/reports?hours=${hours}`);
+                const resp = await fetch(`api/reports?hours=${hours}`);
                 const reports = await resp.json();
 
                 clearLayers();
@@ -290,6 +293,27 @@
             document
                 .getElementById("fit-btn")
                 .addEventListener("click", fitAll);
+            document
+                .getElementById("fetch-btn")
+                .addEventListener("click", async () => {
+                    const btn = document.getElementById("fetch-btn");
+                    const status = document.getElementById("status-bar");
+                    btn.disabled = true;
+                    status.textContent = "Fetching from Apple…";
+                    try {
+                        const resp = await fetch("api/refresh", {
+                            method: "POST",
+                        });
+                        const data = await resp.json();
+                        status.textContent = data.ok
+                            ? "Fetch complete"
+                            : "Fetch failed";
+                        if (data.ok) await loadReports();
+                    } catch {
+                        status.textContent = "Fetch failed";
+                    }
+                    btn.disabled = false;
+                });
 
             loadReports().then(fitAll);
         </script>
