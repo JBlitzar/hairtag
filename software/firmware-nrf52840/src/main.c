@@ -6,6 +6,7 @@
 #include <zephyr/bluetooth/addr.h>
 #include <zephyr/drivers/adc.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/pm/device_runtime.h>
 #include <string.h>
 
 #include "keys.h"
@@ -48,12 +49,18 @@ static int battery_mv(void)
         .resolution = 12,
     };
 
+    if (pm_device_runtime_get(adc_dev) < 0) {
+        return -1;
+    }
     if (adc_channel_setup_dt(&vbat_channel) < 0) {
+        pm_device_runtime_put(adc_dev);
         return -1;
     }
     if (adc_read(adc_dev, &seq) < 0) {
+        pm_device_runtime_put(adc_dev);
         return -1;
     }
+    pm_device_runtime_put(adc_dev);
     mv = raw;
     if (adc_raw_to_millivolts(adc_ref_internal(adc_dev),
                               vbat_channel.channel_cfg.gain, 12, &mv) < 0) {
