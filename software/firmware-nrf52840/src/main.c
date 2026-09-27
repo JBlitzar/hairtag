@@ -6,7 +6,9 @@
 #include <zephyr/bluetooth/addr.h>
 #include <zephyr/drivers/adc.h>
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/pm/device_runtime.h>
+#include <zephyr/pm/device.h>
+#include <zephyr/storage/flash_map.h>
+#include <zephyr/fs/nvs.h>
 #include <string.h>
 
 #include "keys.h"
@@ -14,6 +16,16 @@
 #ifndef KEY_ROTATION_INTERVAL_MS
 #define KEY_ROTATION_INTERVAL_MS (3 * 60 * 60 * 1000)
 #endif
+
+#define CHUNK_MS (5 * 60 * 1000)
+#define CHUNKS_PER_ROT (KEY_ROTATION_INTERVAL_MS / CHUNK_MS)
+#define NVS_ID_CHUNK 1
+#define NVS_ID_KEY 2
+
+static struct nvs_fs nvs = {
+    .flash_device = FIXED_PARTITION_DEVICE(storage_partition),
+    .offset = FIXED_PARTITION_OFFSET(storage_partition),
+};
 
 static uint8_t mfg_data[29];
 
@@ -28,13 +40,16 @@ static struct bt_data ad[] = {
 #define BATT_MV_MIN 2500
 #define BATT_MV_MAX 4200
 
-/* XIAO battery divider: VBAT -> 1M -> P0.31/AIN7 -> 510k -> GND,
-   enabled by driving P0.14 low */
+/* XIAO battery divider: VBAT -> 1M -> P0.31/AIN7 -> 510k -> P0.14,
+   enabled by driving P0.14 low, disconnected otherwise so the divider
+   does not sink ~2.6 uA continuously */
 #define DIVIDER_NUM 1510
 #define DIVIDER_DEN 510
+#define VBAT_ENABLE_PIN 14
 
 static const struct device *adc_dev = DEVICE_DT_GET(DT_NODELABEL(adc));
 static const struct device *gpio0_dev = DEVICE_DT_GET(DT_NODELABEL(gpio0));
+static const struct device *ext_flash_dev = DEVICE_DT_GET(DT_NODELABEL(p25q16h));
 static const struct adc_dt_spec vbat_channel =
     ADC_DT_SPEC_GET(DT_PATH(zephyr_user));
 
@@ -42,6 +57,7 @@ static int battery_mv(void)
 {
     int16_t raw;
     int32_t mv;
+    int err;
     struct adc_sequence seq = {
         .channels = BIT(vbat_channel.channel_id),
         .buffer = &raw,
@@ -49,18 +65,20 @@ static int battery_mv(void)
         .resolution = 12,
     };
 
-    if (pm_device_runtime_get(adc_dev) < 0) {
+    gpio_pin_configure(gpio0_dev, VBAT_ENABLE_PIN,
+                       GPIO_OUTPUT | GPIO_OUTPUT_INIT_LOW);
+    k_msleep(1);
+
+    err = adc_channel_setup_dt(&vbat_channel);
+    if (!err) {
+        err = adc_read(adc_dev, &seq);
+    }
+
+    gpio_pin_configure(gpio0_dev, VBAT_ENABLE_PIN, GPIO_DISCONNECTED);
+
+    if (err) {
         return -1;
     }
-    if (adc_channel_setup_dt(&vbat_channel) < 0) {
-        pm_device_runtime_put(adc_dev);
-        return -1;
-    }
-    if (adc_read(adc_dev, &seq) < 0) {
-        pm_device_runtime_put(adc_dev);
-        return -1;
-    }
-    pm_device_runtime_put(adc_dev);
     mv = raw;
     if (adc_raw_to_millivolts(adc_ref_internal(adc_dev),
                               vbat_channel.channel_cfg.gain, 12, &mv) < 0) {
@@ -114,17 +132,33 @@ int main(void)
 
     bt_addr_le_t addr;
     int key_idx = 0;
+    int chunk = 0;
     int rot_id = -1;
+    int64_t base_ms = 0;
 
-    set_key(0, &addr);
+    pm_device_action_run(ext_flash_dev, PM_DEVICE_ACTION_SUSPEND);
+
+    err = nvs_mount(&nvs);
+    if (!err) {
+        uint8_t v;
+
+        if (nvs_read(&nvs, NVS_ID_KEY, &v, sizeof(v)) > 0 && v < KEY_COUNT) {
+            key_idx = v;
+        }
+        if (nvs_read(&nvs, NVS_ID_CHUNK, &v, sizeof(v)) > 0 && v < CHUNKS_PER_ROT) {
+            chunk = v;
+        }
+        base_ms = (int64_t)key_idx * KEY_ROTATION_INTERVAL_MS
+                + (int64_t)chunk * CHUNK_MS;
+    }
+
+    set_key(key_idx, &addr);
     bt_id_create(&addr, NULL);
 
     err = bt_enable(NULL);
     if (err) {
         return 0;
     }
-
-    gpio_pin_configure(gpio0_dev, 14, GPIO_OUTPUT | GPIO_OUTPUT_INIT_LOW);
 
     mfg_data[STATUS_IDX] = STATUS_FIXED;
     update_status_byte();
@@ -140,10 +174,15 @@ int main(void)
     while (1) {
         k_sleep(K_MINUTES(1));
 
-        int next = (int)((k_uptime_get() / KEY_ROTATION_INTERVAL_MS) % KEY_COUNT);
+        int64_t elapsed = base_ms + k_uptime_get();
+        int next = (int)((elapsed / KEY_ROTATION_INTERVAL_MS) % KEY_COUNT);
+        int next_chunk = (int)((elapsed / CHUNK_MS) % CHUNKS_PER_ROT);
 
         if (next != key_idx) {
             key_idx = next;
+            chunk = next_chunk;
+            nvs_write(&nvs, NVS_ID_KEY, &(uint8_t){ (uint8_t)key_idx }, 1);
+            nvs_write(&nvs, NVS_ID_CHUNK, &(uint8_t){ (uint8_t)chunk }, 1);
             bt_le_adv_stop();
             set_key(key_idx, &addr);
             if (rot_id < 0) {
@@ -155,6 +194,10 @@ int main(void)
             update_status_byte();
             bt_le_adv_start(&adv_param, ad, ARRAY_SIZE(ad), NULL, 0);
         } else {
+            if (next_chunk != chunk) {
+                chunk = next_chunk;
+                nvs_write(&nvs, NVS_ID_CHUNK, &(uint8_t){ (uint8_t)chunk }, 1);
+            }
             update_status_byte();
             bt_le_adv_update_data(ad, ARRAY_SIZE(ad), NULL, 0);
         }
