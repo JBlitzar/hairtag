@@ -8,7 +8,7 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/pm/device.h>
 #include <zephyr/storage/flash_map.h>
-#include <zephyr/fs/nvs.h>
+#include <zephyr/kvss/nvs.h>
 #include <string.h>
 
 #include "keys.h"
@@ -19,12 +19,19 @@
 
 #define CHUNK_MS (5 * 60 * 1000)
 #define CHUNKS_PER_ROT (KEY_ROTATION_INTERVAL_MS / CHUNK_MS)
-#define NVS_ID_CHUNK 1
-#define NVS_ID_KEY 2
+#define NVS_ID_PROGRESS 3
+#define PROGRESS_MAX (KEY_COUNT * CHUNKS_PER_ROT)
+#define NVS_SECTOR_SIZE 4096
+
+BUILD_ASSERT(PARTITION_SIZE(storage_partition) % NVS_SECTOR_SIZE == 0,
+             "storage_partition must be a whole number of NVS sectors");
+BUILD_ASSERT(PROGRESS_MAX <= UINT16_MAX, "progress counter must fit in uint16_t");
 
 static struct nvs_fs nvs = {
-    .flash_device = FIXED_PARTITION_DEVICE(storage_partition),
-    .offset = FIXED_PARTITION_OFFSET(storage_partition),
+    .flash_device = PARTITION_DEVICE(storage_partition),
+    .offset = PARTITION_OFFSET(storage_partition),
+    .sector_size = NVS_SECTOR_SIZE,
+    .sector_count = PARTITION_SIZE(storage_partition) / NVS_SECTOR_SIZE,
 };
 
 static uint8_t mfg_data[29];
@@ -132,28 +139,29 @@ int main(void)
 
     bt_addr_le_t addr;
     int key_idx = 0;
-    int chunk = 0;
+    uint16_t progress = 0;
     int rot_id = -1;
+    bool nvs_ok;
     int64_t base_ms = 0;
 
     pm_device_action_run(ext_flash_dev, PM_DEVICE_ACTION_SUSPEND);
 
-    err = nvs_mount(&nvs);
-    if (!err) {
-        uint8_t v;
+    nvs_ok = (nvs_mount(&nvs) == 0);
+    if (nvs_ok) {
+        uint16_t v;
 
-        if (nvs_read(&nvs, NVS_ID_KEY, &v, sizeof(v)) > 0 && v < KEY_COUNT) {
-            key_idx = v;
+        if (nvs_read(&nvs, NVS_ID_PROGRESS, &v, sizeof(v)) == sizeof(v) &&
+            v < PROGRESS_MAX) {
+            progress = v;
         }
-        if (nvs_read(&nvs, NVS_ID_CHUNK, &v, sizeof(v)) > 0 && v < CHUNKS_PER_ROT) {
-            chunk = v;
-        }
-        base_ms = (int64_t)key_idx * KEY_ROTATION_INTERVAL_MS
-                + (int64_t)chunk * CHUNK_MS;
+        key_idx = progress / CHUNKS_PER_ROT;
+        base_ms = (int64_t)progress * CHUNK_MS;
     }
 
     set_key(key_idx, &addr);
-    bt_id_create(&addr, NULL);
+    if (bt_id_create(&addr, NULL) < 0) {
+        return 0;
+    }
 
     err = bt_enable(NULL);
     if (err) {
@@ -175,29 +183,38 @@ int main(void)
         k_sleep(K_MINUTES(1));
 
         int64_t elapsed = base_ms + k_uptime_get();
-        int next = (int)((elapsed / KEY_ROTATION_INTERVAL_MS) % KEY_COUNT);
-        int next_chunk = (int)((elapsed / CHUNK_MS) % CHUNKS_PER_ROT);
+        uint16_t next_progress = (uint16_t)((elapsed / CHUNK_MS) % PROGRESS_MAX);
+        int next = next_progress / CHUNKS_PER_ROT;
+
+        if (next_progress != progress) {
+            progress = next_progress;
+            if (nvs_ok) {
+                nvs_write(&nvs, NVS_ID_PROGRESS, &progress, sizeof(progress));
+            }
+        }
 
         if (next != key_idx) {
+            uint8_t use_id = BT_ID_DEFAULT;
+
             key_idx = next;
-            chunk = next_chunk;
-            nvs_write(&nvs, NVS_ID_KEY, &(uint8_t){ (uint8_t)key_idx }, 1);
-            nvs_write(&nvs, NVS_ID_CHUNK, &(uint8_t){ (uint8_t)chunk }, 1);
             bt_le_adv_stop();
             set_key(key_idx, &addr);
+
             if (rot_id < 0) {
-                rot_id = bt_id_create(&addr, NULL);
-                adv_param.id = rot_id;
-            } else {
-                bt_id_reset(rot_id, &addr, NULL);
+                int id = bt_id_create(&addr, NULL);
+
+                if (id >= 0) {
+                    rot_id = id;
+                    use_id = (uint8_t)id;
+                }
+            } else if (bt_id_reset(rot_id, &addr, NULL) >= 0) {
+                use_id = (uint8_t)rot_id;
             }
+            adv_param.id = use_id;
+
             update_status_byte();
             bt_le_adv_start(&adv_param, ad, ARRAY_SIZE(ad), NULL, 0);
         } else {
-            if (next_chunk != chunk) {
-                chunk = next_chunk;
-                nvs_write(&nvs, NVS_ID_CHUNK, &(uint8_t){ (uint8_t)chunk }, 1);
-            }
             update_status_byte();
             bt_le_adv_update_data(ad, ARRAY_SIZE(ad), NULL, 0);
         }
