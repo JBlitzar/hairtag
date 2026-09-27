@@ -40,8 +40,8 @@ static struct bt_data ad[] = {
     BT_DATA(BT_DATA_MANUFACTURER_DATA, mfg_data, sizeof(mfg_data)),
 };
 
-/* status byte: bits 7-4 + 1-0 = battery code (0-63, 2.5V-4.2V),
-   bits 3-2 forced high (apple device + maintained => no UT alerts) */
+/* status byte: bits 7-5 + 3-1 = battery code (0-63, 2.5V-4.2V),
+   bit 4 forced low (AirTag/AirPods MSNs have it set and trigger UT alerts) */
 #define STATUS_IDX 4
 #define STATUS_FIXED 0x0c
 #define BATT_MV_MIN 2500
@@ -108,7 +108,7 @@ static void update_status_byte(void)
     } else if (v > 63) {
         v = 63;
     }
-    mfg_data[STATUS_IDX] = ((v & 0x3c) << 2) | STATUS_FIXED | (v & 0x03);
+    mfg_data[STATUS_IDX] = ((v & 0x38) << 2) | ((v & 0x07) << 1);
 }
 
 static void set_key(int idx, bt_addr_le_t *addr)

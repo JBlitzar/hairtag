@@ -38,7 +38,7 @@ def decode_tag(data):
     longitude = struct.unpack(">i", data[4:8])[0] / 10000000.0
     confidence = int.from_bytes(data[8:9], "big")
     status = int.from_bytes(data[9:10], "big")
-    batt_code = ((status & 0xF0) >> 2) | (status & 0x03)
+    batt_code = ((status & 0xE0) >> 2) | ((status & 0x0E) >> 1)
     batt_mv = 2500 + batt_code * 1700 // 63
     return {
         "lat": latitude,
