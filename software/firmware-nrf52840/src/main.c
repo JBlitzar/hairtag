@@ -194,23 +194,28 @@ int main(void)
         }
 
         if (next != key_idx) {
-            uint8_t use_id = BT_ID_DEFAULT;
-
+            int old_idx = key_idx;
             key_idx = next;
             bt_le_adv_stop();
             set_key(key_idx, &addr);
+            bool id_ok = false;
 
             if (rot_id < 0) {
                 int id = bt_id_create(&addr, NULL);
 
                 if (id >= 0) {
                     rot_id = id;
-                    use_id = (uint8_t)id;
+                    adv_param.id = (uint8_t)id;
+                    id_ok = true;
                 }
             } else if (bt_id_reset(rot_id, &addr, NULL) >= 0) {
-                use_id = (uint8_t)rot_id;
+                adv_param.id = (uint8_t)rot_id;
+                id_ok = true;
             }
-            adv_param.id = use_id;
+            if (!id_ok) {
+                key_idx = old_idx;
+                set_key(old_idx, &addr);
+            }
 
             update_status_byte();
             bt_le_adv_start(&adv_param, ad, ARRAY_SIZE(ad), NULL, 0);

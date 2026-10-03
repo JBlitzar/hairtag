@@ -9,7 +9,7 @@ import base64
 import hashlib
 import json
 import os
-import random
+import secrets
 import string
 
 from cryptography.hazmat.backends import default_backend
@@ -43,12 +43,12 @@ def main():
         parser.error("nkeys out of range (1..%d)" % MAX_KEYS)
 
     prefix = args.prefix or "".join(
-        random.choice(string.ascii_uppercase + string.digits) for _ in range(6)
+        secrets.choice(string.ascii_uppercase + string.digits) for _ in range(6)
     )
 
     keys = []
     while len(keys) < args.nkeys:
-        priv = random.getrandbits(224)
+        priv = secrets.randbits(224)
         adv = (
             ec.derive_private_key(priv, ec.SECP224R1(), default_backend())
             .public_key()

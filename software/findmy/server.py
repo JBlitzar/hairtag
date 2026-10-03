@@ -39,7 +39,7 @@ def load_privkeys():
         with open(keyfile) as f:
             composite = json.load(f)
         base = composite.get("name", os.path.basename(keyfile)[:-10])
-        for k in composite["keys"]:
+        for k in composite.get("keys", []):
             keys[k["hashed"]] = (k["private"], f"{base}-{k['hashed'][:7]}")
     return keys
 

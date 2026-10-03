@@ -113,7 +113,7 @@ if __name__ == "__main__":
         with open(keyfile) as f:
             composite = json.load(f)
         base = composite.get("name", os.path.basename(keyfile)[:-10])
-        for k in composite["keys"]:
+        for k in composite.get("keys", []):
             privkeys[k["hashed"]] = k["private"]
             names[k["hashed"]] = f"{base}-{k['hashed'][:7]}"
 
@@ -141,12 +141,19 @@ if __name__ == "__main__":
         headers=anisette_headers,
         json=data,
     )
+    if r.status_code != 200:
+        print(f"ERROR: Apple fetch returned HTTP {r.status_code}")
+        print(f"Response: {r.content[:500].decode('utf-8', errors='replace')}")
+        print("The searchPartyToken may need to be regenerated with --regen")
+        exit(1)
     res = json.loads(r.content.decode())["results"]
     print(f"{r.status_code}: {len(res)} reports received for {len(names)} keys.")
 
     ordered = []
     found = set()
     for report in res:
+        if report["id"] not in privkeys:
+            continue
         priv = int.from_bytes(base64.b64decode(privkeys[report["id"]]), "big")
         data = base64.b64decode(report["payload"])
         if len(data) > 88:
@@ -156,7 +163,8 @@ if __name__ == "__main__":
         timestamp = int.from_bytes(data[0:4], "big") + 978307200
         # Patched: Apple no longer returns datePublished in all responses
         sq3.execute(
-            f"INSERT OR IGNORE INTO reports VALUES ('{names[report['id']]}', {timestamp}, {report.get('datePublished', 0)}, '{report['payload']}', '{report['id']}', {report['statusCode']}, -1)"
+            "INSERT OR IGNORE INTO reports VALUES (?, ?, ?, ?, ?, ?, -1)",
+            (names[report["id"]], timestamp, report.get("datePublished", 0), report["payload"], report["id"], report["statusCode"]),
         )
         if timestamp >= startdate:
             eph_key = ec.EllipticCurvePublicKey.from_encoded_point(
@@ -193,7 +201,8 @@ if __name__ == "__main__":
 
     for hashed_adv, name in names.items():
         sq3.execute(
-            f"SELECT timestamp, payload, id FROM reports WHERE id_short = '{name}' AND timestamp >= {startdate}"
+            "SELECT timestamp, payload, id FROM reports WHERE id_short = ? AND timestamp >= ?",
+            (name, startdate),
         )
         db_reports = sq3.fetchall()
         for row in db_reports:
