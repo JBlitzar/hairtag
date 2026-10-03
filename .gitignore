@@ -42,3 +42,6 @@ software/firmware/compile_commands.json
 /software/firmware-nrf52840/.vscode
 /software/firmware-nrf52840/build
 software/firmware-nrf52840/scripts/test_btmon.sh
+/software/findmy/keys
+/software/firmware-nrf52840/scripts/output
+software/firmware-nrf52840/src/keys.h
