@@ -4,14 +4,17 @@ import base64
 import datetime
 import glob
 import hashlib
+import json
 import os
 import sqlite3
 import struct
+import subprocess
+import sys
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, Response, jsonify, render_template, request
 
 app = Flask(__name__)
 
@@ -20,9 +23,9 @@ DB_PATH = os.path.join(BASE_DIR, "reports.db")
 
 
 def load_privkeys():
-    """Return {hashed_adv_b64: (priv_b64, short_name)} for all .keys files."""
+    """Return {hashed_adv_b64: (priv_b64, short_name)} for all key files."""
     keys = {}
-    for keyfile in glob.glob(os.path.join(BASE_DIR, "*.keys")):
+    for keyfile in glob.glob(os.path.join(BASE_DIR, "**", "*.keys"), recursive=True):
         with open(keyfile) as f:
             priv = hashed = ""
             name = os.path.basename(keyfile)[:-5]
@@ -34,6 +37,12 @@ def load_privkeys():
                     hashed = k[1]
             if priv and hashed:
                 keys[hashed] = (priv, name)
+    for keyfile in glob.glob(os.path.join(BASE_DIR, "**", "*.keys.json"), recursive=True):
+        with open(keyfile) as f:
+            composite = json.load(f)
+        base = composite.get("name", os.path.basename(keyfile)[:-10])
+        for k in composite.get("keys", []):
+            keys[k["hashed"]] = (k["private"], f"{base}-{k['hashed'][:7]}")
     return keys
 
 
@@ -68,7 +77,9 @@ def decrypt_payload(payload_b64, priv_b64):
     lon = struct.unpack(">i", decrypted[4:8])[0] / 10000000.0
     conf = int.from_bytes(decrypted[8:9], "big")
     status = int.from_bytes(decrypted[9:10], "big")
-    return lat, lon, conf, status
+    batt_code = ((status & 0xE0) >> 2) | ((status & 0x0E) >> 1)
+    batt_mv = 2500 + batt_code * 1700 // 63
+    return lat, lon, conf, status, batt_mv
 
 
 @app.route("/")
@@ -110,7 +121,7 @@ def api_reports():
             continue
         priv_b64, name = privkeys[hashed_adv]
         try:
-            lat, lon, conf, status = decrypt_payload(row["payload"], priv_b64)
+            lat, lon, conf, status, batt_mv = decrypt_payload(row["payload"], priv_b64)
         except Exception:
             continue
 
@@ -121,6 +132,7 @@ def api_reports():
                 "lon": lon,
                 "conf": conf,
                 "status": status,
+                "batt_mv": batt_mv,
                 "timestamp": row["timestamp"],
                 "isodatetime": datetime.datetime.fromtimestamp(
                     row["timestamp"]
@@ -129,6 +141,65 @@ def api_reports():
         )
 
     return jsonify(results)
+
+
+@app.route("/raw.txt")
+def raw_txt():
+    hours = request.args.get("hours", 24, type=int)
+    cutoff = int(datetime.datetime.now().timestamp()) - hours * 3600
+
+    privkeys = load_privkeys()
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id_short, timestamp, payload, id FROM reports WHERE timestamp >= ? ORDER BY timestamp ASC",
+        (cutoff,),
+    )
+    rows = cur.fetchall()
+    conn.close()
+
+    lines = []
+    for row in rows:
+        hashed_adv = row["id"]
+        if hashed_adv not in privkeys:
+            continue
+        priv_b64, name = privkeys[hashed_adv]
+        try:
+            lat, lon, conf, status, batt_mv = decrypt_payload(row["payload"], priv_b64)
+        except Exception:
+            continue
+
+        lines.append(json.dumps({
+            "key": name,
+            "lat": lat,
+            "lon": lon,
+            "conf": conf,
+            "status": status,
+            "batt_mv": batt_mv,
+            "timestamp": row["timestamp"],
+            "isodatetime": datetime.datetime.fromtimestamp(
+                row["timestamp"]
+            ).isoformat(),
+        }))
+
+    return Response("\n".join(lines), mimetype="text/plain")
+
+
+@app.route("/api/refresh", methods=["POST"])
+def api_refresh():
+    try:
+        result = subprocess.run(
+            [sys.executable, "request_reports.py", "--hours", "168"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            cwd=BASE_DIR,
+        )
+        return jsonify({"ok": result.returncode == 0, "output": result.stdout[-500:]})
+    except subprocess.TimeoutExpired:
+        return jsonify({"ok": False, "error": "timeout"}), 504
 
 
 if __name__ == "__main__":

@@ -38,7 +38,15 @@ def decode_tag(data):
     longitude = struct.unpack(">i", data[4:8])[0] / 10000000.0
     confidence = int.from_bytes(data[8:9], "big")
     status = int.from_bytes(data[9:10], "big")
-    return {"lat": latitude, "lon": longitude, "conf": confidence, "status": status}
+    batt_code = ((status & 0xE0) >> 2) | ((status & 0x0E) >> 1)
+    batt_mv = 2500 + batt_code * 1700 // 63
+    return {
+        "lat": latitude,
+        "lon": longitude,
+        "conf": confidence,
+        "status": status,
+        "batt_mv": batt_mv,
+    }
 
 
 def getAuth(regenerate=False, second_factor="sms"):
@@ -69,9 +77,6 @@ if __name__ == "__main__":
         default=24,
     )
     parser.add_argument(
-        "-p", "--prefix", help="only use keyfiles starting with this prefix", default=""
-    )
-    parser.add_argument(
         "-r", "--regen", help="regenerate search-party-token", action="store_true"
     )
     parser.add_argument(
@@ -87,9 +92,8 @@ if __name__ == "__main__":
 
     privkeys = {}
     names = {}
-    for keyfile in glob.glob(
-        os.path.dirname(os.path.realpath(__file__)) + "/" + args.prefix + "*.keys"
-    ):
+
+    for keyfile in glob.glob(os.path.join(os.path.dirname(os.path.realpath(__file__)),"keys", "*.keys")):
         with open(keyfile) as f:
             hashed_adv = priv = ""
             name = os.path.basename(keyfile)[:-5]
@@ -105,6 +109,13 @@ if __name__ == "__main__":
                 names[hashed_adv] = name
             else:
                 print(f"Couldn't find key pair in {keyfile}")
+    for keyfile in glob.glob(os.path.join(os.path.dirname(os.path.realpath(__file__)),"keys", "*.keys.json")):
+        with open(keyfile) as f:
+            composite = json.load(f)
+        base = composite.get("name", os.path.basename(keyfile)[:-10])
+        for k in composite.get("keys", []):
+            privkeys[k["hashed"]] = k["private"]
+            names[k["hashed"]] = f"{base}-{k['hashed'][:7]}"
 
     unixEpoch = int(datetime.datetime.now().strftime("%s"))
     startdate = unixEpoch - (60 * 60 * args.hours)
@@ -113,33 +124,42 @@ if __name__ == "__main__":
         regenerate=args.regen,
         second_factor="trusted_device" if args.trusteddevice else "sms",
     )
-    anisette_headers = generate_anisette_headers()
 
+    all_ids = list(names.keys())
+    BATCH_SIZE = 20
     res = []
-    for hashed_adv, name in names.items():
+    for i in range(0, len(all_ids), BATCH_SIZE):
+        batch = all_ids[i:i + BATCH_SIZE]
         data = {
             "search": [
                 {
                     "startDate": startdate * 1000,
                     "endDate": unixEpoch * 1000,
-                    "ids": [hashed_adv],
+                    "ids": batch,
                 }
             ]
         }
         r = requests.post(
             "https://gateway.icloud.com/acsnservice/fetch",
             auth=auth_creds,
-            headers=anisette_headers,
+            headers=generate_anisette_headers(),
             json=data,
         )
-        key_res = json.loads(r.content.decode())["results"]
-        res.extend(key_res)
-        print(f"  {name}: {r.status_code}, {len(key_res)} reports")
-    print(f"Total: {len(res)} reports received.")
+        if r.status_code != 200:
+            print(f"ERROR: Apple fetch returned HTTP {r.status_code}")
+            print(f"Response: {r.content[:500].decode('utf-8', errors='replace')}")
+            print("The searchPartyToken may need to be regenerated with --regen")
+            exit(1)
+        batch_res = json.loads(r.content.decode())["results"]
+        res.extend(batch_res)
+        print(f"  batch {i // BATCH_SIZE + 1}: {len(batch_res)} reports for {len(batch)} keys")
+    print(f"{len(res)} total reports received for {len(names)} keys.")
 
     ordered = []
     found = set()
     for report in res:
+        if report["id"] not in privkeys:
+            continue
         priv = int.from_bytes(base64.b64decode(privkeys[report["id"]]), "big")
         data = base64.b64decode(report["payload"])
         if len(data) > 88:
@@ -149,7 +169,8 @@ if __name__ == "__main__":
         timestamp = int.from_bytes(data[0:4], "big") + 978307200
         # Patched: Apple no longer returns datePublished in all responses
         sq3.execute(
-            f"INSERT OR IGNORE INTO reports VALUES ('{names[report['id']]}', {timestamp}, {report.get('datePublished', 0)}, '{report['payload']}', '{report['id']}', {report['statusCode']})"
+            "INSERT OR IGNORE INTO reports VALUES (?, ?, ?, ?, ?, ?, -1)",
+            (names[report["id"]], timestamp, report.get("datePublished", 0), report["payload"], report["id"], report["statusCode"]),
         )
         if timestamp >= startdate:
             eph_key = ec.EllipticCurvePublicKey.from_encoded_point(
@@ -168,6 +189,10 @@ if __name__ == "__main__":
                 enc_data, algorithms.AES(decryption_key), modes.GCM(iv, auth_tag)
             )
             tag = decode_tag(decrypted)
+            sq3.execute(
+                "UPDATE reports SET batt_mv = ? WHERE payload = ?",
+                (tag["batt_mv"], report["payload"]),
+            )
             tag["timestamp"] = timestamp
             tag["isodatetime"] = datetime.datetime.fromtimestamp(timestamp).isoformat()
             tag["key"] = names[report["id"]]
@@ -182,7 +207,8 @@ if __name__ == "__main__":
 
     for hashed_adv, name in names.items():
         sq3.execute(
-            f"SELECT timestamp, payload, id FROM reports WHERE id_short = '{name}' AND timestamp >= {startdate}"
+            "SELECT timestamp, payload, id FROM reports WHERE id_short = ? AND timestamp >= ?",
+            (name, startdate),
         )
         db_reports = sq3.fetchall()
         for row in db_reports:
@@ -235,7 +261,7 @@ if __name__ == "__main__":
     if ordered:
         tbl = PrettyTable()
         tbl.set_style(TableStyle.SINGLE_BORDER)
-        tbl.field_names = ["Key", "Time", "Lat", "Lon", "Conf", "Map"]
+        tbl.field_names = ["Key", "Time", "Lat", "Lon", "Conf", "Batt", "Map"]
         tbl.align = "l"
         tbl.max_width = 60
         for rep in ordered:
@@ -246,6 +272,7 @@ if __name__ == "__main__":
                     f"{rep['lat']}",
                     f"{rep['lon']}",
                     rep["conf"],
+                    f"{rep['batt_mv']}mV",
                     rep["goog"],
                 ]
             )
