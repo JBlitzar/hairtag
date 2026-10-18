@@ -20,31 +20,27 @@
         <style>
             * {
                 box-sizing: border-box;
-                margin: 0;
-                padding: 0;
             }
             body {
-                font-family: "Geist Mono", monospace;
+                font-family: Times, "Times New Roman", serif;
+                color: black;
+                background: white;
                 display: flex;
                 height: 100vh;
                 overflow: hidden;
+                margin: 0;
             }
 
             #sidebar {
                 width: 240px;
                 min-width: 240px;
-                background: #efefef;
-                color: #111;
+                background: white;
+                color: black;
                 display: flex;
                 flex-direction: column;
                 padding: 16px;
                 gap: 12px;
                 overflow-y: auto;
-            }
-            #sidebar h1 {
-                font-size: 16px;
-                font-weight: 600;
-                color: #111;
             }
 
             #controls {
@@ -52,30 +48,10 @@
                 flex-direction: column;
                 gap: 8px;
             }
-            #controls label {
-                font-size: 12px;
-                color: #111;
-            }
             #controls select,
             #controls button {
                 width: 100%;
-                padding: 7px 10px;
-                border-radius: 6px;
-                border: none;
-                font-size: 13px;
-                cursor: pointer;
-            }
-            #controls select {
-                background: #efefef;
-                color: #111;
-            }
-            #controls button {
-                background: #efefef;
-                color: #111;
-                outline: 1px solid #000;
-            }
-            #controls button:hover {
-                background: #d0cfcf;
+                font-family: inherit;
             }
 
             #tag-list {
@@ -83,49 +59,33 @@
                 flex-direction: column;
                 gap: 8px;
             }
-            #tag-list h2 {
-                font-size: 13px;
-                color: #aaa;
-                font-weight: 500;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-            }
 
             .tag-card {
-                font-family: "Geist Mono", monospace;
-                background: #efefef;
-                border-radius: 8px;
+                background: white;
+                color: black;
+                border: 1px solid black;
                 padding: 10px 12px;
-                outline: 1px solid #000;
-                border-left: 4px solid var(--tag-color, #888);
-            }
-            .tag-card .tag-name {
-                font-size: 13px;
-                font-weight: 600;
+                cursor: pointer;
             }
             .tag-card .tag-last-seen {
-                font-size: 11px;
-                color: #aaa;
                 margin-top: 3px;
-            }
-            .tag-card .tag-count {
-                font-size: 11px;
-                color: #888;
             }
 
             #map {
                 flex: 1;
+            }
+            #map.leaflet-container {
+                font-family: inherit;
             }
 
             #status-bar {
                 position: absolute;
                 bottom: 10px;
                 left: 260px;
-                background: rgba(0, 0, 0, 0.65);
-                color: #fff;
+                background: white;
+                color: black;
+                border: 1px solid black;
                 padding: 4px 10px;
-                border-radius: 12px;
-                font-size: 12px;
                 pointer-events: none;
                 z-index: 1000;
             }
