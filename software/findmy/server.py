@@ -146,6 +146,7 @@ def api_reports():
 @app.route("/raw.txt")
 def raw_txt():
     hours = request.args.get("hours", 24, type=int)
+    redact = request.args.get("redact", 0, type=int)
     cutoff = int(datetime.datetime.now().timestamp()) - hours * 3600
 
     privkeys = load_privkeys()
@@ -171,7 +172,7 @@ def raw_txt():
         except Exception:
             continue
 
-        lines.append(json.dumps({
+        entry = {
             "key": name,
             "lat": lat,
             "lon": lon,
@@ -182,7 +183,11 @@ def raw_txt():
             "isodatetime": datetime.datetime.fromtimestamp(
                 row["timestamp"]
             ).isoformat(),
-        }))
+        }
+        if redact:
+            entry.pop("lat")
+            entry.pop("lon")
+        lines.append(json.dumps(entry))
 
     return Response("\n".join(lines), mimetype="text/plain")
 
